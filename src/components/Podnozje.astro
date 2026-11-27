@@ -27,7 +27,7 @@ const godina = new Date().getFullYear();
       <ul class="mt-3 space-y-2">
         <li><a href="/listici/">Tjedni listići</a></li>
         <li><a href="/kalendar/">Kalendar događanja</a></li>
-        <li><a href="/kontakt/#donacije">Donacije</a></li>
+        {p.iban && <li><a href="/kontakt/#donacije">Donacije</a></li>}
         <li><a class="inline-flex items-center gap-2" href="/rss.xml"><Ikona ime="rss" /> RSS obavijesti</a></li>
       </ul>
     </div>

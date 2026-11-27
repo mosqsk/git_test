@@ -55,6 +55,7 @@ const STALNI: Record<string, [string, Boja]> = {
   '5-1': ['Sveti Josip Radnik', 'bijela'],
   '6-24': ['Rođenje svetog Ivana Krstitelja', 'bijela'],
   '6-29': ['Sveti Petar i Pavao, apostoli', 'crvena'],
+  '7-22': ['Sveta Marija Magdalena – proslava župe', 'bijela'],
   '8-6': ['Preobraženje Gospodinovo', 'bijela'],
   '8-15': ['Uznesenje Blažene Djevice Marije – Velika Gospa', 'bijela'],
   '9-8': ['Rođenje Blažene Djevice Marije – Mala Gospa', 'bijela'],
