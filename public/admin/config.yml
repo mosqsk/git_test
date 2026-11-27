@@ -240,6 +240,26 @@ collections:
       - { name: slika, label: Slika, widget: image, required: false }
       - { name: body, label: Dodatni tekst, widget: markdown, required: false }
 
+  # ---------------------------------------------------------------- CRKVE I KAPELE
+  - name: crkve
+    label: Crkve i kapele
+    label_singular: Crkva ili kapela
+    description: Crkve i kapele po selima župe. Prikazuju se na stranici O župi.
+    icon: church
+    folder: src/content/crkve
+    create: true
+    slug: '{{fields.redoslijed}}-{{slug}}-{{fields.mjesto}}'
+    identifier_field: naziv
+    summary: '{{naziv}} · {{mjesto}}'
+    sortable_fields: { fields: [redoslijed, naziv, mjesto], default: { field: redoslijed } }
+    fields:
+      - { name: naziv, label: Naziv, widget: string, hint: 'Npr. Kapela sv. Josipa' }
+      - { name: mjesto, label: Mjesto (selo), widget: string, required: false }
+      - { name: redoslijed, label: Redoslijed prikaza, widget: number, default: 20 }
+      - { name: slika, label: Fotografija, widget: image, required: false }
+      - { name: opis_slike, label: Opis fotografije (za slabovidne), widget: string, required: false }
+      - { name: body, label: Tekst o crkvi ili kapeli, widget: markdown, required: false, hint: 'Povijest, svetac zaštitnik, kada se slavi misa…' }
+
   # ---------------------------------------------------------------- SVEĆENICI
   - name: svecenici
     label: Svećenici
