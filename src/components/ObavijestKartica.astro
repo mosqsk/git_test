@@ -1,0 +1,19 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { datumSrednji, isoDan } from '../lib/datum';
+interface Props { o: CollectionEntry<'obavijesti'>; velika?: boolean }
+const { o, velika = false } = Astro.props;
+const { naslov, datum, sazetak, kategorija, slika } = o.data;
+---
+<article class="kartica group relative flex h-full flex-col transition-shadow hover:shadow-md">
+  {slika && <img src={slika} alt="" loading="lazy" decoding="async" class="-mx-5 -mt-5 mb-5 aspect-[16/9] w-[calc(100%+2.5rem)] max-w-none rounded-t-2xl object-cover sm:-mx-6 sm:-mt-6 sm:w-[calc(100%+3rem)]" />}
+  <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.95rem] text-siva">
+    <span class="oznaka">{kategorija}</span>
+    <time datetime={isoDan(datum)}>{datumSrednji(datum)}</time>
+  </div>
+  <h3 class:list={['mt-3', velika ? 'text-2xl' : 'text-xl']}>
+    <a href={`/obavijesti/${o.id}/`} class="text-tinta no-underline after:absolute after:inset-0 group-hover:text-akcent">{naslov}</a>
+  </h3>
+  {sazetak && <p class="mt-2 text-siva">{sazetak}</p>}
+  <span class="mt-auto pt-4 font-semibold text-akcent" aria-hidden="true">Pročitaj više →</span>
+</article>

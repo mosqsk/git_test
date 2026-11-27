@@ -1,0 +1,73 @@
+---
+import { render } from 'astro:content';
+import Osnova from '../../layouts/Osnova.astro';
+import Akcije from '../../components/Akcije.astro';
+import Ikona from '../../components/Ikona.astro';
+import { listici, postavke } from '../../lib/sadrzaj';
+import { datumKratki, danUTjednu, danIMjesec, isoDan, velikoSlovo } from '../../lib/datum';
+
+export async function getStaticPaths() {
+  const svi = await listici();
+  return svi.map((l, i) => ({ params: { id: l.id }, props: { l, noviji: svi[i - 1], stariji: svi[i + 1] } }));
+}
+const { l, noviji, stariji } = Astro.props;
+const p = await postavke();
+const { Content } = await render(l);
+const { naslov, tjedan_od, tjedan_do, liturgijski_naslov, nakane, pdf } = l.data;
+
+const poDanima = new Map<string, typeof nakane>();
+for (const n of [...nakane].sort((a, b) => a.datum.valueOf() - b.datum.valueOf())) {
+  const k = isoDan(n.datum);
+  poDanima.set(k, [...(poDanima.get(k) ?? []), n]);
+}
+const minute = (v: string) => { const [h, m = '0'] = v.split(/[:.]/); return Number(h) * 60 + Number(m); };
+---
+<Osnova naslov={naslov} opis={`${liturgijski_naslov || naslov}: misne nakane i obavijesti za tjedan ${datumKratki(tjedan_od)} – ${datumKratki(tjedan_do)}`} vrsta="article">
+  <article class="omot py-10 sm:py-14">
+    <a href="/listici/" class="bez-ispisa font-semibold">← Svi listići</a>
+
+    <header class="mt-6 border-b-2 border-akcent pb-6">
+      <p class="nadnaslov">{p.naziv} · Tjedni listić</p>
+      <h1 class="mt-2 text-4xl sm:text-5xl">{liturgijski_naslov || naslov}</h1>
+      <p class="mt-2 text-xl text-siva">{datumKratki(tjedan_od)} – {datumKratki(tjedan_do)}</p>
+      <div class="mt-6 flex flex-wrap gap-2">
+        {pdf && <a href={pdf} class="gumb bez-ispisa" download><Ikona ime="pdf" /> Preuzmi PDF</a>}
+        <Akcije naslov={naslov} />
+      </div>
+    </header>
+
+    <div class="mt-10 grid gap-10 lg:grid-cols-[1fr_1.1fr]">
+      {poDanima.size > 0 && (
+        <section aria-labelledby="nakane">
+          <h2 id="nakane" class="text-2xl">Misne nakane</h2>
+          <ol class="mt-4 space-y-3">
+            {[...poDanima].map(([dan, lista]) => (
+              <li class="kartica p-4 sm:p-5" data-dan-iso={dan}>
+                <p class="flex flex-wrap items-center gap-2 font-semibold">
+                  <span class="relativni-dan rounded-full bg-zlatna px-2 py-0.5 text-xs font-bold uppercase text-white" hidden></span>
+                  {velikoSlovo(danUTjednu(lista[0].datum))}, {danIMjesec(lista[0].datum)}
+                </p>
+                <ul class="mt-2 divide-y divide-crta">
+                  {lista.sort((a, b) => minute(a.vrijeme) - minute(b.vrijeme)).map((n) => (
+                    <li class="flex gap-4 py-2">
+                      <span class="w-14 shrink-0 font-serif text-lg font-semibold tabular-nums text-akcent">{n.vrijeme}</span>
+                      <span>{n.nakana}</span>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+      <section aria-label="Obavijesti u tjednu">
+        <div class="proza"><Content /></div>
+      </section>
+    </div>
+
+    <nav class="bez-ispisa mt-14 flex flex-wrap justify-between gap-4 border-t border-crta pt-6" aria-label="Ostali listići">
+      {stariji ? <a href={`/listici/${stariji.id}/`} class="font-semibold">← {stariji.data.liturgijski_naslov || stariji.data.naslov}</a> : <span />}
+      {noviji && <a href={`/listici/${noviji.id}/`} class="font-semibold">{noviji.data.liturgijski_naslov || noviji.data.naslov} →</a>}
+    </nav>
+  </article>
+</Osnova>

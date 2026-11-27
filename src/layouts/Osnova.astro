@@ -1,0 +1,62 @@
+---
+import '../styles/global.css';
+import Zaglavlje from '../components/Zaglavlje.astro';
+import Podnozje from '../components/Podnozje.astro';
+import { postavke } from '../lib/sadrzaj';
+
+interface Props {
+  naslov?: string;
+  opis?: string;
+  slika?: string;
+  vrsta?: 'website' | 'article';
+}
+const p = await postavke();
+const { naslov, opis = p.opis, slika, vrsta = 'website' } = Astro.props;
+const punNaslov = naslov ? `${naslov} | ${p.kratki_naziv}` : p.naziv;
+const kanonski = new URL(Astro.url.pathname, Astro.site);
+const ogSlika = new URL(slika || '/og-slika.png', Astro.site);
+---
+<!doctype html>
+<html lang="hr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{punNaslov}</title>
+    <meta name="description" content={opis} />
+    <link rel="canonical" href={kanonski} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={`Obavijesti – ${p.kratki_naziv}`} href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#7a1f2b" />
+
+    <meta property="og:type" content={vrsta} />
+    <meta property="og:locale" content="hr_HR" />
+    <meta property="og:site_name" content={p.naziv} />
+    <meta property="og:title" content={naslov ?? p.naziv} />
+    <meta property="og:description" content={opis} />
+    <meta property="og:url" content={kanonski} />
+    <meta property="og:image" content={ogSlika} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Church',
+      name: p.naziv,
+      url: Astro.site?.toString(),
+      telephone: p.telefon || undefined,
+      email: p.email || undefined,
+      address: { '@type': 'PostalAddress', streetAddress: p.adresa.ulica, postalCode: p.adresa.postanski_broj, addressLocality: p.adresa.mjesto, addressCountry: 'HR' },
+      geo: { '@type': 'GeoCoordinates', latitude: p.adresa.lat, longitude: p.adresa.lng },
+    })} />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <Zaglavlje naziv={p.kratki_naziv} podnaslov={p.podnaslov} />
+    <main id="sadrzaj" class="flex-1">
+      <slot />
+    </main>
+    <Podnozje />
+    <script>
+      import '../scripts/danas';
+    </script>
+  </body>
+</html>

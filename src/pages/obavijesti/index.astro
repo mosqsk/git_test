@@ -1,0 +1,74 @@
+---
+import Osnova from '../../layouts/Osnova.astro';
+import NaslovStranice from '../../components/NaslovStranice.astro';
+import Podizbornik from '../../components/ObavijestiPodizbornik.astro';
+import ObavijestKartica from '../../components/ObavijestKartica.astro';
+import Ikona from '../../components/Ikona.astro';
+import { obavijesti, tekstIzMarkdowna } from '../../lib/sadrzaj';
+
+const sve = await obavijesti();
+const kategorije = [...new Set(sve.map((o) => o.data.kategorija))].sort((a, b) => a.localeCompare(b, 'hr'));
+---
+<Osnova naslov="Župne obavijesti" opis="Najnovije obavijesti, najave i događanja u župi.">
+  <NaslovStranice nadnaslov="Župne obavijesti" naslov="Obavijesti" uvod="Najave, pozivi i vijesti iz života župe. Pretražite ili odaberite temu.">
+    <Podizbornik aktivno="obavijesti" />
+  </NaslovStranice>
+
+  <section class="omot py-10">
+    <form class="bez-ispisa grid gap-4 sm:grid-cols-[1fr_auto]" role="search" onsubmit="return false">
+      <label class="relative block">
+        <span class="sr-only">Pretraži obavijesti</span>
+        <Ikona ime="trazi" class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-siva" />
+        <input id="trazi" type="search" placeholder="Pretraži obavijesti…" autocomplete="off"
+          class="min-h-13 w-full rounded-xl border-2 border-crta bg-povrsina py-3 pl-12 pr-4 text-lg focus:border-akcent focus:outline-none" />
+      </label>
+      <label class="block">
+        <span class="sr-only">Tema</span>
+        <select id="tema" class="min-h-13 w-full rounded-xl border-2 border-crta bg-povrsina px-4 py-3 text-lg focus:border-akcent focus:outline-none">
+          <option value="">Sve teme</option>
+          {kategorije.map((k) => <option value={k}>{k}</option>)}
+        </select>
+      </label>
+    </form>
+    <p id="broj" class="mt-4 text-siva" role="status" aria-live="polite">{sve.length} obavijesti</p>
+
+    <ul id="popis" class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {sve.map((o) => (
+        <li data-tema={o.data.kategorija} data-tekst={`${o.data.naslov} ${o.data.sazetak} ${o.data.kategorija} ${tekstIzMarkdowna(o.body)}`.toLowerCase()}>
+          <ObavijestKartica o={o} />
+        </li>
+      ))}
+    </ul>
+    <p id="nista" class="mt-6 text-lg text-siva" hidden>Nema obavijesti koje odgovaraju pretrazi.</p>
+  </section>
+</Osnova>
+
+<script>
+  const trazi = document.getElementById('trazi') as HTMLInputElement;
+  const tema = document.getElementById('tema') as HTMLSelectElement;
+  const stavke = [...document.querySelectorAll<HTMLElement>('#popis > li')];
+  const broj = document.getElementById('broj')!;
+  const nista = document.getElementById('nista')!;
+  const bezKvacica = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
+
+  function filtriraj() {
+    const rijeci = bezKvacica(trazi.value.toLowerCase()).split(/\s+/).filter(Boolean);
+    let n = 0;
+    for (const li of stavke) {
+      const tekst = bezKvacica(li.dataset.tekst || '');
+      const ok = (!tema.value || li.dataset.tema === tema.value) && rijeci.every((r) => tekst.includes(r));
+      li.hidden = !ok;
+      if (ok) n++;
+    }
+    broj.textContent = `${n} ${n === 1 ? 'obavijest' : 'obavijesti'}`;
+    nista.hidden = n > 0;
+    const url = new URL(location.href);
+    trazi.value ? url.searchParams.set('q', trazi.value) : url.searchParams.delete('q');
+    history.replaceState(null, '', url);
+  }
+  const q = new URLSearchParams(location.search).get('q');
+  if (q) trazi.value = q;
+  trazi.addEventListener('input', filtriraj);
+  tema.addEventListener('change', filtriraj);
+  filtriraj();
+</script>

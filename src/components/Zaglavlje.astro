@@ -1,0 +1,83 @@
+---
+import Ikona from './Ikona.astro';
+interface Props { naziv: string; podnaslov?: string }
+const { naziv, podnaslov } = Astro.props;
+const stavke = [
+  { href: '/', tekst: 'Naslovnica' },
+  { href: '/obavijesti/', tekst: 'Župne obavijesti' },
+  { href: '/sakramenti/', tekst: 'Sakramenti' },
+  { href: '/zajednice/', tekst: 'Zajednice i aktivnosti' },
+  { href: '/o-zupi/', tekst: 'O župi' },
+  { href: '/kontakt/', tekst: 'Kontakt i ured' },
+];
+const put = Astro.url.pathname;
+const aktivno = (href: string) =>
+  href === '/' ? put === '/' : put.startsWith(href) || (href === '/obavijesti/' && (put.startsWith('/listici') || put.startsWith('/kalendar')));
+---
+<a href="#sadrzaj" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2">Preskoči na sadržaj</a>
+
+<div class="h-1.5 w-full" style="background: var(--liturgijska)" aria-hidden="true"></div>
+<div class="border-b border-crta bg-povrsina/70 text-[0.9rem] text-siva">
+  <div class="omot flex flex-wrap items-center gap-x-3 gap-y-0.5 py-1.5">
+    <span data-liturgija="datum" class="font-semibold text-tinta"></span>
+    <span class="hidden sm:inline" aria-hidden="true">·</span>
+    <span class="inline-flex items-center gap-1.5">
+      <span class="inline-block h-2.5 w-2.5 rounded-full" style="background: var(--liturgijska)" aria-hidden="true"></span>
+      <span data-liturgija="naziv"></span>
+    </span>
+  </div>
+</div>
+
+<header class="sticky top-0 z-40 border-b border-crta bg-papir/95 backdrop-blur supports-[backdrop-filter]:bg-papir/85">
+  <div class="omot flex items-center justify-between gap-4 py-3">
+    <a href="/" class="flex min-w-0 items-center gap-3 text-tinta no-underline hover:text-tinta">
+      <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 border-zlatna text-akcent">
+        <svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor" aria-hidden="true"><path d="M10.5 2h3v5.5H19v3h-5.5V22h-3V10.5H5v-3h5.5z"/></svg>
+      </span>
+      <span class="min-w-0">
+        <span class="block truncate font-serif text-lg font-semibold leading-tight sm:text-xl">{naziv}</span>
+        {podnaslov && <span class="block truncate text-sm text-siva">{podnaslov}</span>}
+      </span>
+    </a>
+
+    <button id="izbornik-gumb" type="button" class="inline-flex min-h-12 items-center gap-2 rounded-xl border border-crta bg-povrsina px-4 font-semibold text-tinta lg:hidden" aria-expanded="false" aria-controls="izbornik">
+      <Ikona ime="izbornik" class="h-6 w-6" /> Izbornik
+    </button>
+
+    <nav aria-label="Glavni izbornik" class="hidden lg:block">
+      <ul class="flex items-center gap-1">
+        {stavke.map((s) => (
+          <li>
+            <a href={s.href} aria-current={aktivno(s.href) ? 'page' : undefined}
+              class:list={['rounded-lg px-3 py-2 font-semibold no-underline transition-colors', aktivno(s.href) ? 'bg-akcent-blijedi text-akcent' : 'text-tinta hover:bg-akcent-blijedi hover:text-akcent']}>
+              {s.tekst}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+
+  <nav id="izbornik" aria-label="Glavni izbornik" class="hidden border-t border-crta bg-papir lg:hidden">
+    <ul class="omot grid gap-1 py-3">
+      {stavke.map((s) => (
+        <li>
+          <a href={s.href} aria-current={aktivno(s.href) ? 'page' : undefined}
+            class:list={['flex min-h-12 items-center justify-between rounded-xl px-4 text-lg font-semibold no-underline', aktivno(s.href) ? 'bg-akcent-blijedi text-akcent' : 'text-tinta hover:bg-akcent-blijedi']}>
+            {s.tekst} <Ikona ime="desno" class="h-5 w-5 text-siva" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const gumb = document.getElementById('izbornik-gumb');
+  const izbornik = document.getElementById('izbornik');
+  gumb?.addEventListener('click', () => {
+    const otvoren = gumb.getAttribute('aria-expanded') === 'true';
+    gumb.setAttribute('aria-expanded', String(!otvoren));
+    izbornik?.classList.toggle('hidden', otvoren);
+  });
+</script>

@@ -1,0 +1,54 @@
+---
+import Osnova from '../../layouts/Osnova.astro';
+import NaslovStranice from '../../components/NaslovStranice.astro';
+import Podizbornik from '../../components/ObavijestiPodizbornik.astro';
+import Ikona from '../../components/Ikona.astro';
+import { listici } from '../../lib/sadrzaj';
+import { datumKratki } from '../../lib/datum';
+
+const svi = await listici();
+const poGodinama = new Map<number, typeof svi>();
+for (const l of svi) {
+  const g = l.data.tjedan_od.getUTCFullYear();
+  poGodinama.set(g, [...(poGodinama.get(g) ?? []), l]);
+}
+const [aktualni] = svi;
+---
+<Osnova naslov="Tjedni listići" opis="Tjedni župni listići s misnim nakanama i najavama.">
+  <NaslovStranice nadnaslov="Župne obavijesti" naslov="Tjedni listići" uvod="Svaki tjedan: misne nakane po danima, blagoslov obitelji, pobožnosti i najave.">
+    <Podizbornik aktivno="listici" />
+  </NaslovStranice>
+
+  <section class="omot py-10">
+    {aktualni && (
+      <a href={`/listici/${aktualni.id}/`} class="kartica flex flex-wrap items-center justify-between gap-4 border-2 border-akcent text-tinta no-underline hover:bg-akcent-blijedi hover:text-tinta">
+        <div>
+          <p class="nadnaslov">Aktualni listić</p>
+          <p class="mt-1 font-serif text-2xl font-semibold">{aktualni.data.liturgijski_naslov || aktualni.data.naslov}</p>
+          <p class="text-siva">{datumKratki(aktualni.data.tjedan_od)} – {datumKratki(aktualni.data.tjedan_do)}</p>
+        </div>
+        <span class="gumb">Otvori <Ikona ime="strelica" /></span>
+      </a>
+    )}
+
+    {[...poGodinama].map(([godina, lista]) => (
+      <div class="mt-10">
+        <h2 class="ukras text-2xl"><span class="text-tinta">{godina}.</span></h2>
+        <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {lista.map((l) => (
+            <li>
+              <a href={`/listici/${l.id}/`} class="kartica flex items-center gap-4 p-4 text-tinta no-underline hover:border-akcent hover:text-tinta sm:p-4">
+                <Ikona ime="dokument" class="h-7 w-7 shrink-0 text-akcent" />
+                <span class="min-w-0">
+                  <span class="block font-semibold leading-snug">{l.data.liturgijski_naslov || l.data.naslov}</span>
+                  <span class="block text-[0.95rem] text-siva">{datumKratki(l.data.tjedan_od)} – {datumKratki(l.data.tjedan_do)}{l.data.pdf && ' · PDF'}</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+    {svi.length === 0 && <p class="text-siva">Još nema objavljenih listića.</p>}
+  </section>
+</Osnova>

@@ -1,0 +1,138 @@
+---
+import Osnova from '../layouts/Osnova.astro';
+import RasporedMisa from '../components/RasporedMisa.astro';
+import Ispovijed from '../components/Ispovijed.astro';
+import ObavijestKartica from '../components/ObavijestKartica.astro';
+import DogadajStavka from '../components/DogadajStavka.astro';
+import Ikona from '../components/Ikona.astro';
+import { postavke, obavijesti, listici, dogadaji, telHref } from '../lib/sadrzaj';
+import { datumKratki, datumDugi, vrijeme, zidno, isoDan, velikoSlovo } from '../lib/datum';
+
+const p = await postavke();
+const sveObavijesti = await obavijesti();
+const istaknute = sveObavijesti.filter((o) => o.data.istaknuto);
+const zadnje = [...istaknute, ...sveObavijesti.filter((o) => !o.data.istaknuto)]
+  .slice(0, 4)
+  .sort((a, b) => b.data.datum.valueOf() - a.data.datum.valueOf());
+const listic = (await listici())[0];
+const svi = await dogadaji();
+// Za "nadolazeće" šaljemo malo širi popis; preglednik sakrije one koji su prošli.
+const granica = Date.now() - 2 * 86400000;
+const nadolazeci = svi.filter((e) => (e.data.kraj ?? e.data.pocetak).valueOf() >= granica).slice(0, 12);
+
+const brzePoveznice = [
+  { href: '/sakramenti/', naslov: 'Sakramenti', opis: 'Krštenje, pričest, krizma, vjenčanje i potrebni dokumenti', ikona: 'dokument' },
+  { href: '/zajednice/', naslov: 'Zajednice', opis: 'Zborovi, ministranti, Caritas, vjeronauk', ikona: 'osobe' },
+  { href: '/kalendar/', naslov: 'Kalendar', opis: 'Sva događanja u župi na jednom mjestu', ikona: 'kalendar' },
+  { href: '/kontakt/#donacije', naslov: 'Donacije', opis: 'Podržite župu uplatom na račun', ikona: 'srce' },
+];
+---
+<Osnova>
+  <!-- Uvod -->
+  <section class="relative overflow-hidden border-b border-crta">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_0%,_var(--color-zlatna-blijeda),_transparent_60%)]" aria-hidden="true"></div>
+    <div class="omot relative grid gap-10 py-12 sm:py-16 lg:grid-cols-[1.3fr_1fr] lg:items-center">
+      <div>
+        <p class="nadnaslov">Dobro došli</p>
+        <h1 class="mt-3 text-4xl sm:text-5xl lg:text-6xl">{p.naziv}</h1>
+        {p.opis && <p class="mt-5 max-w-xl text-lg text-siva sm:text-xl">{p.opis}</p>}
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="#mise" class="gumb"><Ikona ime="sat" /> Raspored misa</a>
+          <a href="/obavijesti/" class="gumb-obrub">Župne obavijesti</a>
+        </div>
+      </div>
+
+      <aside class="kartica relative overflow-hidden" aria-labelledby="danas-naslov">
+        <div class="absolute inset-x-0 top-0 h-1.5" style="background: var(--liturgijska)" aria-hidden="true"></div>
+        <p id="danas-naslov" class="nadnaslov">Liturgijski dan</p>
+        <p class="mt-2 font-serif text-2xl font-semibold leading-snug" data-liturgija="naziv">&nbsp;</p>
+        <p class="mt-1 text-siva"><span data-liturgija="datum"></span></p>
+        <p class="mt-1 text-sm text-siva" data-liturgija="boja"></p>
+
+        <div data-sljedeci class="mt-6 border-t border-crta pt-5" hidden>
+          <p class="nadnaslov">Sljedeće u župi</p>
+          {nadolazeci.map((e) => (
+            <a href="/kalendar/" data-kraj={e.data.kraj ? zidno(e.data.kraj) : e.data.cijeli_dan ? `${isoDan(e.data.pocetak)}T23:59` : zidno(new Date(e.data.pocetak.valueOf() + 2 * 3600000))}
+              class="mt-2 block text-tinta no-underline hover:text-akcent" hidden>
+              <span class="block font-serif text-xl font-semibold">{e.data.naslov}</span>
+              <span class="block text-siva">{velikoSlovo(datumDugi(e.data.pocetak))}{!e.data.cijeli_dan && `, ${vrijeme(e.data.pocetak)}`}{e.data.mjesto && ` · ${e.data.mjesto}`}</span>
+            </a>
+          ))}
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Mise, ispovijed, kontakt -->
+  <section id="mise" class="omot scroll-mt-24 py-12">
+    <div class="grid gap-6 lg:grid-cols-3">
+      <div class="lg:col-span-2"><RasporedMisa /></div>
+      <div class="grid gap-6">
+        <Ispovijed />
+        <div class="kartica">
+          <h2 class="text-2xl">Župni ured</h2>
+          <ul class="mt-4 space-y-3">
+            {p.telefon && <li><a class="inline-flex min-h-11 items-center gap-3 text-lg font-semibold" href={telHref(p.telefon)}><Ikona ime="telefon" /> {p.telefon}</a></li>}
+            {p.email && <li><a class="inline-flex min-h-11 items-center gap-3 break-all" href={`mailto:${p.email}`}><Ikona ime="mail" /> {p.email}</a></li>}
+            <li class="flex gap-3 text-siva"><Ikona ime="mjesto" class="mt-1 h-5 w-5 shrink-0" /> <span>{p.adresa.ulica}, {p.adresa.mjesto}</span></li>
+          </ul>
+          <a href="/kontakt/" class="mt-4 inline-block font-semibold">Radno vrijeme i karta →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Obavijesti -->
+  <section class="border-y border-crta bg-povrsina/60">
+    <div class="omot py-12">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="nadnaslov">Iz župe</p>
+          <h2 class="mt-1 text-3xl sm:text-4xl">Najnovije obavijesti</h2>
+        </div>
+        <a href="/obavijesti/" class="gumb-obrub">Sve obavijesti <Ikona ime="strelica" /></a>
+      </div>
+      <div class="mt-8 grid gap-6 sm:grid-cols-2">
+        {zadnje.map((o) => <ObavijestKartica o={o} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Događanja i listić -->
+  <section class="omot grid gap-6 py-12 lg:grid-cols-[1.4fr_1fr]">
+    <div class="kartica">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="text-2xl">Nadolazeća događanja</h2>
+        <a href="/kalendar/" class="font-semibold">Kalendar →</a>
+      </div>
+      <ul class="mt-4 divide-y divide-crta" data-nadolazece="5">
+        {nadolazeci.map((e) => <DogadajStavka e={e} />)}
+        <li data-prazno hidden class="py-3 text-siva">Trenutno nema najavljenih događanja.</li>
+      </ul>
+    </div>
+
+    {listic && (
+      <a href={`/listici/${listic.id}/`} class="kartica group flex flex-col self-start bg-akcent text-white no-underline hover:bg-akcent-tamni hover:text-white">
+        <p class="text-sm font-semibold uppercase tracking-[0.14em] text-zlatna-blijeda">Tjedni listić</p>
+        <p class="mt-2 font-serif text-2xl font-semibold text-white">{listic.data.liturgijski_naslov || listic.data.naslov}</p>
+        <p class="mt-1 text-white/85">{datumKratki(listic.data.tjedan_od)} – {datumKratki(listic.data.tjedan_do)}</p>
+        <p class="mt-4 text-white/90">Misne nakane, blagoslov obitelji i sve najave za ovaj tjedan.</p>
+        <span class="mt-auto inline-flex items-center gap-2 pt-6 font-semibold">Otvori listić <Ikona ime="strelica" /></span>
+      </a>
+    )}
+  </section>
+
+  <!-- Brze poveznice -->
+  <section class="omot pb-4">
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {brzePoveznice.map((b) => (
+        <li>
+          <a href={b.href} class="kartica flex h-full gap-4 text-tinta no-underline hover:border-akcent hover:text-tinta">
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-akcent-blijedi text-akcent"><Ikona ime={b.ikona} class="h-6 w-6" /></span>
+            <span><span class="block font-serif text-lg font-semibold">{b.naslov}</span><span class="block text-[0.95rem] text-siva">{b.opis}</span></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Osnova>

@@ -1,0 +1,57 @@
+---
+import { getCollection, render } from 'astro:content';
+import Osnova from '../layouts/Osnova.astro';
+import NaslovStranice from '../components/NaslovStranice.astro';
+import Ikona from '../components/Ikona.astro';
+
+const zajednice = (await getCollection('zajednice')).sort((a, b) => a.data.redoslijed - b.data.redoslijed);
+const stavke = await Promise.all(zajednice.map(async (z) => ({ z, Content: (await render(z)).Content })));
+const vrste = [...new Set(zajednice.map((z) => z.data.vrsta))];
+const jeKontaktMail = (k: string) => k.includes('@');
+---
+<Osnova naslov="Zajednice i aktivnosti" opis="Zborovi, ministranti, čitači, Caritas, molitvene zajednice i župni vjeronauk.">
+  <NaslovStranice nadnaslov="Župne zajednice" naslov="Zajednice i aktivnosti" uvod="Svatko može pronaći svoje mjesto u župi. Javite se voditelju ili dođite u navedeno vrijeme." />
+
+  <section class="omot py-10">
+    <div class="bez-ispisa flex flex-wrap gap-2" role="group" aria-label="Filtriraj po vrsti">
+      <button type="button" data-filtar="" aria-pressed="true" class="filtar">Sve</button>
+      {vrste.map((v) => <button type="button" data-filtar={v} aria-pressed="false" class="filtar">{v}</button>)}
+    </div>
+
+    <ul class="mt-8 grid gap-6 md:grid-cols-2">
+      {stavke.map(({ z, Content }) => (
+        <li data-vrsta={z.data.vrsta} id={z.id} class="kartica flex flex-col scroll-mt-28">
+          {z.data.slika && <img src={z.data.slika} alt="" loading="lazy" class="-mx-5 -mt-5 mb-5 aspect-[16/9] w-[calc(100%+2.5rem)] max-w-none rounded-t-2xl object-cover sm:-mx-6 sm:-mt-6 sm:w-[calc(100%+3rem)]" />}
+          <span class="oznaka self-start">{z.data.vrsta}</span>
+          <h2 class="mt-3 text-2xl">{z.data.naziv}</h2>
+          {z.data.sazetak && <p class="mt-2 text-siva">{z.data.sazetak}</p>}
+          <div class="proza mt-2 text-siva"><Content /></div>
+          <dl class="mt-auto grid gap-2 border-t border-crta pt-4 mt-5 text-[0.98rem]">
+            {z.data.termin && <div class="flex gap-3"><dt class="sr-only">Termin</dt><Ikona ime="sat" class="mt-1 h-5 w-5 shrink-0 text-akcent" /><dd class="font-semibold">{z.data.termin}</dd></div>}
+            {z.data.mjesto && <div class="flex gap-3"><dt class="sr-only">Mjesto</dt><Ikona ime="mjesto" class="mt-1 h-5 w-5 shrink-0 text-akcent" /><dd>{z.data.mjesto}</dd></div>}
+            {z.data.voditelj && <div class="flex gap-3"><dt class="sr-only">Voditelj</dt><Ikona ime="osobe" class="mt-1 h-5 w-5 shrink-0 text-akcent" /><dd>{z.data.voditelj}</dd></div>}
+            {z.data.kontakt && <div class="flex gap-3"><dt class="sr-only">Kontakt</dt><Ikona ime={jeKontaktMail(z.data.kontakt) ? 'mail' : 'telefon'} class="mt-1 h-5 w-5 shrink-0 text-akcent" /><dd><a href={jeKontaktMail(z.data.kontakt) ? `mailto:${z.data.kontakt}` : `tel:${z.data.kontakt.replace(/[^\d+]/g, '')}`}>{z.data.kontakt}</a></dd></div>}
+          </dl>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Osnova>
+
+<style>
+  .filtar {
+    min-height: 2.75rem; padding: 0.4rem 1rem; border-radius: 9999px; font-weight: 600;
+    border: 2px solid var(--color-crta); background: var(--color-povrsina); color: var(--color-tinta);
+  }
+  .filtar:hover { border-color: var(--color-akcent); }
+  .filtar[aria-pressed='true'] { background: var(--color-akcent); border-color: var(--color-akcent); color: #fff; }
+</style>
+
+<script>
+  const gumbi = document.querySelectorAll<HTMLButtonElement>('[data-filtar]');
+  const kartice = document.querySelectorAll<HTMLElement>('[data-vrsta]');
+  gumbi.forEach((g) => g.addEventListener('click', () => {
+    gumbi.forEach((x) => x.setAttribute('aria-pressed', String(x === g)));
+    kartice.forEach((k) => (k.hidden = !!g.dataset.filtar && k.dataset.vrsta !== g.dataset.filtar));
+  }));
+</script>

@@ -1,0 +1,26 @@
+---
+import Ikona from './Ikona.astro';
+interface Props { naslov: string }
+const { naslov } = Astro.props;
+---
+<div class="bez-ispisa flex flex-wrap gap-2" data-akcije>
+  <button type="button" data-dijeli={naslov} class="gumb-obrub min-h-11 px-4 text-base"><Ikona ime="dijeli" /> Podijeli</button>
+  <button type="button" data-ispis class="gumb-obrub min-h-11 px-4 text-base"><Ikona ime="ispis" /> Ispiši</button>
+  <span data-poruka class="self-center text-sm text-siva" role="status" aria-live="polite"></span>
+</div>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-akcije]').forEach((okvir) => {
+    const poruka = okvir.querySelector<HTMLElement>('[data-poruka]');
+    okvir.querySelector('[data-ispis]')?.addEventListener('click', () => window.print());
+    okvir.querySelector<HTMLElement>('[data-dijeli]')?.addEventListener('click', async (e) => {
+      const title = (e.currentTarget as HTMLElement).dataset.dijeli;
+      const url = location.href;
+      if (navigator.share) {
+        try { await navigator.share({ title, url }); } catch { /* korisnik je odustao */ }
+      } else {
+        await navigator.clipboard?.writeText(url);
+        if (poruka) poruka.textContent = 'Poveznica je kopirana.';
+      }
+    });
+  });
+</script>
