@@ -24,7 +24,9 @@ const brzePoveznice = [
   { href: '/sakramenti/', naslov: 'Sakramenti', opis: 'Krštenje, pričest, krizma, vjenčanje i potrebni dokumenti', ikona: 'dokument' },
   { href: '/zajednice/', naslov: 'Zajednice', opis: 'Zborovi, ministranti, Caritas, vjeronauk', ikona: 'osobe' },
   { href: '/kalendar/', naslov: 'Kalendar', opis: 'Sva događanja u župi na jednom mjestu', ikona: 'kalendar' },
-  { href: '/kontakt/#donacije', naslov: 'Donacije', opis: 'Podržite župu uplatom na račun', ikona: 'srce' },
+  p.iban
+    ? { href: '/kontakt/#donacije', naslov: 'Donacije', opis: 'Podržite župu uplatom na račun', ikona: 'srce' }
+    : { href: '/o-zupi/', naslov: 'O župi', opis: 'Povijest, crkva i zaštitnica župe', ikona: 'kriz' },
 ];
 ---
 <Osnova>

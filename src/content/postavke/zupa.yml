@@ -1,46 +1,46 @@
-naziv: "[PRIMJER] Župa sv. Josipa"
-kratki_naziv: "[PRIMJER] Župa sv. Josipa"
-podnaslov: "[PRIMJER] Mjesto, Hrvatska"
-biskupija: "[PRIMJER] Nadbiskupija"
-opis: "[PRIMJER] Dobro došli na mrežnu stranicu naše župe. Ovdje su raspored svetih misa, tjedne obavijesti, upute za sakramente i sve što trebate znati o životu župne zajednice."
+naziv: "Župa svete Marije Magdalene, Sunja"
+kratki_naziv: "Župa sv. Marije Magdalene"
+podnaslov: "Sunja · Sisačka biskupija"
+biskupija: "Sisačka biskupija · Dubičko-kostajnički dekanat"
+opis: "Dobro došli na mrežnu stranicu župe svete Marije Magdalene u Sunji. Ovdje su raspored svetih misa, tjedne obavijesti, upute za sakramente i sve što trebate znati o životu naše župne zajednice."
 adresa:
-  ulica: "[PRIMJER] Crkvena ulica 1"
-  postanski_broj: "10000"
-  mjesto: "[PRIMJER] Zagreb"
-  lat: 45.8144
-  lng: 15.9780
-telefon: "+385 1 234 5678"
-mobitel: "+385 91 234 5678"
-email: "zupa@primjer.hr"
-iban: "HR1210010051863000160"
-primatelj: "[PRIMJER] Župa sv. Josipa"
-banka: "[PRIMJER] Banka d.d."
-oib: "00000000000"
-facebook: ""
+  ulica: "Matije Gupca 29"
+  postanski_broj: "44210"
+  mjesto: "Sunja"
+  lat: 45.3537
+  lng: 16.5605
+telefon: "+385 44 833 087"
+mobitel: ""
+email: "ivankuzmic86@gmail.com"
+iban: ""
+primatelj: "Župa sv. Marije Magdalene, Sunja"
+banka: ""
+oib: ""
+facebook: "https://www.facebook.com/groups/393710587500/"
 youtube: ""
 raspored_misa:
-  - oznaka: "Nedjelja i zapovjedni blagdani"
+  - oznaka: "[PRIMJER] Nedjelja i zapovjedni blagdani"
     dani: [ned]
     vremena: ["8:00", "10:00", "11:30", "18:00"]
     napomena: ""
-  - oznaka: "Radni dan (ponedjeljak – petak)"
+  - oznaka: "[PRIMJER] Radni dan (ponedjeljak – petak)"
     dani: [pon, uto, sri, cet, pet]
     vremena: ["7:00", "18:00"]
     napomena: "Večernja misa ljeti u 19:00"
-  - oznaka: "Subota"
+  - oznaka: "[PRIMJER] Subota"
     dani: [sub]
     vremena: ["7:00", "18:00"]
     napomena: "Večernja misa je nedjeljna (vigilija)"
 ispovijed:
-  - kada: "Svaki dan pola sata prije večernje mise"
+  - kada: "[PRIMJER] Svaki dan pola sata prije večernje mise"
     napomena: ""
-  - kada: "Subotom 17:00 – 18:00"
+  - kada: "[PRIMJER] Subotom 17:00 – 18:00"
     napomena: ""
-  - kada: "Prvi petak u mjesecu od 16:30"
+  - kada: "[PRIMJER] Prvi petak u mjesecu od 16:30"
     napomena: "Pohod bolesnicima u jutarnjim satima"
 radno_vrijeme_ureda:
-  - dani: "Ponedjeljak, srijeda, petak"
+  - dani: "[PRIMJER] Ponedjeljak, srijeda, petak"
     vrijeme: "9:00 – 11:00"
-  - dani: "Utorak i četvrtak"
+  - dani: "[PRIMJER] Utorak i četvrtak"
     vrijeme: "16:00 – 17:30"
-napomena_ureda: "Za hitne slučajeve (bolesnik na samrti) svećenik je dostupan u svako doba na mobitel."
+napomena_ureda: "[PRIMJER] Za hitne slučajeve (bolesnik na samrti) nazovite župni ured u bilo koje doba."

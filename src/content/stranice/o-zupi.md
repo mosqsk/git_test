@@ -1,19 +1,31 @@
 ---
 naslov: "O župi"
-uvod: "[PRIMJER] Naša župa osnovana je 1789. godine. Danas okuplja oko 6.000 vjernika."
-zastitnik: "Sveti Josip"
-dan_proslave: "19. ožujka"
-o_zastitniku: "[PRIMJER] Sveti Josip, zaručnik Blažene Djevice Marije i hranitelj Isusov, zaštitnik je obitelji, radnika i Crkve. Župu slavimo na svetkovinu sv. Josipa, 19. ožujka, a spomen sv. Josipa Radnika 1. svibnja."
+uvod: "Župa svete Marije Magdalene u Sunji spominje se već 1334. godine. Danas okuplja oko 3.174 vjernika u 21 naselju."
+zastitnik: "Sveta Marija Magdalena"
+dan_proslave: "22. srpnja"
+o_zastitniku: "Marija Magdalena pratila je Isusa i bila prva svjedokinja njegova uskrsnuća. Zbog toga je zovu „apostolicom apostolâ”. Njezin blagdan slavimo 22. srpnja."
 slika: ""
 galerija: []
 ---
 
-## Povijest crkve i župe
+## Povijest župe
 
-[PRIMJER] Prva kapela na ovom mjestu spominje se u kanonskim vizitacijama iz 17. stoljeća. Župa je osnovana 1789. godine, a sadašnja crkva sagrađena je između 1902. i 1906. godine prema nacrtima arhitekta [PRIMJER].
+Župa se prvi put spominje **1334. godine**. Sjedište joj je tada bilo u Sunjskoj Gredi. Kao župa obnovljena je **1716. godine**.
 
-Crkva je teško oštećena u potresu 1880. i ponovno 2020. godine. Obnova je završena 2024. godine zahvaljujući darovima župljana.
+## Župna crkva
 
-## Crkva danas
+Crkva svete Marije Magdalene sagrađena je **1824. godine** na mjestu nekadašnje drvene crkve. Građena je u kasnobaroknom i klasicističkom stilu, kakav je karakterističan za crkve Vojne krajine. U Domovinskom ratu oštećena je granatiranjem, a poslije je obnovljena.
 
-[PRIMJER] Crkva ima tri oltara, orgulje iz 1910. godine i vrijedne vitraje. Uz crkvu se nalaze župni dom, vjeronaučna dvorana i prostorije Caritasa.
+U crkvi su orgulje koje je **1909. godine** izradio graditelj orgulja Joseph Brandl.
+
+## Područje župe
+
+Župa obuhvaća oko **3.174 vjernika** u **21 naselju**. Osim župne crkve u Sunji, ima filijalne crkve i kapele u ovim mjestima:
+
+Bobovac, Bistrač, Drljača, Greda Sunjska, Gradusa Posavska, Letina Donja, Selišće Sunjsko, Staza, Vedro Polje i Žreme.
+
+Župa pripada **Dubičko-kostajničkom dekanatu** [Sisačke biskupije](https://biskupija-sisak.hr/zupa-svete-marije-magdalene-sunja/).
+
+## Pratite nas
+
+Najnovije vijesti iz župe objavljujemo i u [Facebook grupi župe](https://www.facebook.com/groups/393710587500/).

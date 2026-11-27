@@ -26,7 +26,7 @@ const godine = (od?: number | null, doG?: number | null) => (od ? `${od}. – ${
     <aside class="space-y-6">
       {s.zastitnik && (
         <div class="kartica border-t-4 border-t-zlatna">
-          <p class="nadnaslov">Zaštitnik župe</p>
+          <p class="nadnaslov">{/^(sveta|blažena|gospa|bl. djevica)/i.test(s.zastitnik) ? "Zaštitnica župe" : "Zaštitnik župe"}</p>
           <h2 class="mt-2 text-3xl">{s.zastitnik}</h2>
           {s.dan_proslave && <p class="mt-1 text-lg font-semibold text-akcent">Proslava: {s.dan_proslave}</p>}
           {s.o_zastitniku && <p class="mt-3 text-siva">{s.o_zastitniku}</p>}
