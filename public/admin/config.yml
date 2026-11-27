@@ -15,9 +15,10 @@ backend:
     uploadMedia: 'Nova datoteka: {{path}}'
     deleteMedia: 'Brisanje datoteke: {{path}}'
 
-site_url: /
-display_url: /
-logo_url: /favicon.svg
+site_url: https://zupa-sv-marije-magdalene.netlify.app
+display_url: https://zupa-sv-marije-magdalene.netlify.app
+logo:
+  src: /favicon.svg
 
 media_folder: public/uploads
 public_folder: /uploads

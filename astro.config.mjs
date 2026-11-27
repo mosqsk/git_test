@@ -7,7 +7,7 @@ import sitemap from '@astrojs/sitemap';
 process.env.TZ = 'UTC';
 
 // Kada stranica dobije pravu adresu (domenu), upišite je ovdje ili u varijablu SITE_URL na hostingu.
-const site = process.env.SITE_URL || process.env.URL || process.env.CF_PAGES_URL || 'https://zupa-sunja.netlify.app';
+const site = process.env.SITE_URL || process.env.URL || process.env.CF_PAGES_URL || 'https://zupa-sv-marije-magdalene.netlify.app';
 
 export default defineConfig({
   site,
