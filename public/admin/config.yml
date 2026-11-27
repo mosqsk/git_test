@@ -1,0 +1,287 @@
+# Postavke sučelja za uređivanje (Sveltia CMS, kompatibilno s Decap CMS-om).
+# Upute: README.md, poglavlje "Hosting i prijava urednika".
+
+backend:
+  name: github
+  repo: mosqsk/git_test # vlasnik/repozitorij
+  branch: main
+  # Netlify: ostavite ovako (koristi se Netlifyjeva GitHub prijava).
+  # Cloudflare Pages: odkomentirajte i upišite adresu svog Sveltia CMS Authenticatora.
+  # base_url: https://sveltia-cms-auth.VASE-IME.workers.dev
+  commit_messages:
+    create: 'Novo: {{collection}} „{{slug}}”'
+    update: 'Izmjena: {{collection}} „{{slug}}”'
+    delete: 'Brisanje: {{collection}} „{{slug}}”'
+    uploadMedia: 'Nova datoteka: {{path}}'
+    deleteMedia: 'Brisanje datoteke: {{path}}'
+
+site_url: /
+display_url: /
+logo_url: /favicon.svg
+
+media_folder: public/uploads
+public_folder: /uploads
+
+# Slike se pri učitavanju automatski smanjuju i pretvaraju u WebP.
+media_libraries:
+  default:
+    config:
+      slugify_filename: true
+      transformations:
+        raster_image:
+          format: webp
+          quality: 82
+          width: 1600
+          height: 1600
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+collections:
+  # ---------------------------------------------------------------- OBAVIJESTI
+  - name: obavijesti
+    label: Obavijesti
+    label_singular: Obavijest
+    description: Kratke vijesti i najave koje se prikazuju na naslovnici i u popisu obavijesti.
+    icon: campaign
+    folder: src/content/obavijesti
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    summary: '{{datum | date("DD. MM. YYYY.")}} · {{naslov}}'
+    sortable_fields: { fields: [datum, naslov], default: { field: datum, direction: descending } }
+    view_filters:
+      - { label: Istaknute, field: istaknuto, pattern: true }
+    fields:
+      - { name: naslov, label: Naslov, widget: string }
+      - { name: datum, label: Datum objave, widget: datetime, time_format: false, format: YYYY-MM-DD, default: '{{now}}' }
+      - name: kategorija
+        label: Tema
+        widget: select
+        default: Obavijest
+        options: [Obavijest, Najava, Liturgija, Sakramenti, Caritas, Zajednice, Mladi, Pobožnost]
+      - { name: sazetak, label: Kratki sažetak, widget: text, required: false, hint: 'Jedna ili dvije rečenice. Prikazuje se na naslovnici.' }
+      - { name: slika, label: Slika, widget: image, required: false }
+      - { name: istaknuto, label: Istakni na naslovnici, widget: boolean, default: false }
+      - { name: objavljeno, label: Objavljeno, widget: boolean, default: true, hint: 'Isključite da sakrijete obavijest bez brisanja.' }
+      - { name: body, label: Tekst obavijesti, widget: markdown, required: false }
+
+  # ---------------------------------------------------------------- LISTIĆI
+  - name: listici
+    label: Tjedni listići
+    label_singular: Tjedni listić
+    description: Svaki tjedan novi listić s misnim nakanama i obavijestima. Najlakše je dodati novi listić i promijeniti tekst.
+    icon: description
+    folder: src/content/listici
+    create: true
+    slug: '{{fields.tjedan_od}}'
+    identifier_field: naslov
+    summary: '{{tjedan_od | date("DD. MM.")}} – {{tjedan_do | date("DD. MM. YYYY.")}} · {{liturgijski_naslov}}'
+    sortable_fields: { fields: [tjedan_od], default: { field: tjedan_od, direction: descending } }
+    fields:
+      - { name: naslov, label: Naslov, widget: string, default: 'Župni listić' }
+      - { name: liturgijski_naslov, label: Liturgijski naziv nedjelje, widget: string, required: false, hint: 'Npr. Druga nedjelja došašća' }
+      - { name: tjedan_od, label: Tjedan od (nedjelja), widget: datetime, time_format: false, format: YYYY-MM-DD }
+      - { name: tjedan_do, label: Tjedan do, widget: datetime, time_format: false, format: YYYY-MM-DD }
+      - name: nakane
+        label: Misne nakane
+        label_singular: Nakana
+        widget: list
+        required: false
+        summary: '{{datum | date("ddd DD. MM.")}} {{vrijeme}} – {{nakana}}'
+        fields:
+          - { name: datum, label: Dan, widget: datetime, time_format: false, format: YYYY-MM-DD }
+          - { name: vrijeme, label: Vrijeme mise, widget: string, hint: 'Npr. 18:00' }
+          - { name: nakana, label: Nakana, widget: string }
+      - { name: body, label: Obavijesti u tjednu, widget: markdown, required: false, hint: 'Blagoslov obitelji, pobožnosti, najave…' }
+      - { name: pdf, label: PDF listića (neobavezno), widget: file, required: false, accept: application/pdf }
+      - { name: objavljeno, label: Objavljeno, widget: boolean, default: true }
+
+  # ---------------------------------------------------------------- DOGAĐAJI
+  - name: dogadaji
+    label: Događaji (kalendar)
+    label_singular: Događaj
+    description: Događaji se prikazuju u kalendaru i na naslovnici dok ne prođu.
+    icon: event
+    folder: src/content/dogadaji
+    create: true
+    slug: '{{fields.pocetak | date("YYYY-MM-DD")}}-{{slug}}'
+    summary: '{{pocetak | date("DD. MM. YYYY. HH:mm")}} · {{naslov}}'
+    sortable_fields: { fields: [pocetak, naslov], default: { field: pocetak, direction: descending } }
+    fields:
+      - { name: naslov, label: Naziv događaja, widget: string }
+      - { name: pocetak, label: Početak, widget: datetime, format: 'YYYY-MM-DDTHH:mm' }
+      - { name: kraj, label: Završetak (neobavezno), widget: datetime, format: 'YYYY-MM-DDTHH:mm', required: false }
+      - { name: cijeli_dan, label: Cijeli dan, widget: boolean, default: false }
+      - { name: mjesto, label: Mjesto, widget: string, required: false, default: Župna crkva }
+      - name: vrsta
+        label: Vrsta
+        widget: select
+        default: Događaj
+        options: [Događaj, Liturgija, Blagdan, Pobožnost, Sakramenti, Caritas, Za djecu, Mladi, Koncert, Hodočašće]
+      - { name: sazetak, label: Kratki opis, widget: text, required: false }
+      - { name: body, label: Dulji opis (neobavezno), widget: markdown, required: false }
+
+  # ---------------------------------------------------------------- POSTAVKE
+  - name: postavke
+    label: Postavke župe
+    description: Podaci koji se prikazuju na svim stranicama – raspored misa, kontakt, IBAN, radno vrijeme.
+    icon: settings
+    files:
+      - name: zupa
+        label: Podaci o župi, mise i kontakt
+        file: src/content/postavke/zupa.yml
+        fields:
+          - { name: naziv, label: Puni naziv župe, widget: string }
+          - { name: kratki_naziv, label: Kratki naziv (za zaglavlje), widget: string }
+          - { name: podnaslov, label: Podnaslov (mjesto), widget: string, required: false }
+          - { name: biskupija, label: (Nad)biskupija, widget: string, required: false }
+          - { name: opis, label: Pozdravni tekst na naslovnici, widget: text, required: false }
+          - name: raspored_misa
+            label: Raspored svetih misa
+            label_singular: Redak rasporeda
+            widget: list
+            summary: '{{oznaka}}: {{vremena}}'
+            fields:
+              - { name: oznaka, label: Oznaka, widget: string, hint: 'Npr. Nedjelja i zapovjedni blagdani' }
+              - name: dani
+                label: Dani na koje vrijedi (za oznaku "Danas")
+                widget: select
+                multiple: true
+                required: false
+                options:
+                  - { label: Ponedjeljak, value: pon }
+                  - { label: Utorak, value: uto }
+                  - { label: Srijeda, value: sri }
+                  - { label: Četvrtak, value: cet }
+                  - { label: Petak, value: pet }
+                  - { label: Subota, value: sub }
+                  - { label: Nedjelja, value: ned }
+              - { name: vremena, label: Vremena misa, widget: list, field: { name: vrijeme, label: Vrijeme, widget: string }, hint: 'Npr. 8:00' }
+              - { name: napomena, label: Napomena, widget: string, required: false }
+          - name: ispovijed
+            label: Sveta ispovijed
+            label_singular: Termin ispovijedi
+            widget: list
+            summary: '{{kada}}'
+            fields:
+              - { name: kada, label: Kada, widget: string }
+              - { name: napomena, label: Napomena, widget: string, required: false }
+          - name: adresa
+            label: Adresa i karta
+            widget: object
+            fields:
+              - { name: ulica, label: Ulica i broj, widget: string }
+              - { name: postanski_broj, label: Poštanski broj, widget: string, required: false }
+              - { name: mjesto, label: Mjesto, widget: string }
+              - { name: lat, label: Geografska širina (lat), widget: number, value_type: float, hint: 'Desni klik na crkvu u Google kartama pokaže koordinate, npr. 45.8144' }
+              - { name: lng, label: Geografska dužina (lng), widget: number, value_type: float, hint: 'Npr. 15.9780' }
+          - { name: telefon, label: Telefon ureda, widget: string, required: false }
+          - { name: mobitel, label: Mobitel (hitni slučajevi), widget: string, required: false }
+          - { name: email, label: E-mail, widget: string, required: false }
+          - name: radno_vrijeme_ureda
+            label: Radno vrijeme ureda
+            label_singular: Termin
+            widget: list
+            summary: '{{dani}}: {{vrijeme}}'
+            fields:
+              - { name: dani, label: Dani, widget: string }
+              - { name: vrijeme, label: Vrijeme, widget: string }
+          - { name: napomena_ureda, label: Napomena uz radno vrijeme, widget: text, required: false }
+          - { name: iban, label: IBAN za donacije, widget: string, required: false }
+          - { name: primatelj, label: Primatelj uplate, widget: string, required: false }
+          - { name: banka, label: Banka, widget: string, required: false }
+          - { name: oib, label: OIB župe, widget: string, required: false }
+          - { name: facebook, label: Facebook (poveznica), widget: string, required: false }
+          - { name: youtube, label: YouTube (poveznica), widget: string, required: false }
+
+  # ---------------------------------------------------------------- SAKRAMENTI
+  - name: sakramenti
+    label: Sakramenti
+    label_singular: Sakrament
+    icon: church
+    folder: src/content/sakramenti
+    create: true
+    slug: '{{slug}}'
+    identifier_field: naziv
+    sortable_fields: { fields: [redoslijed], default: { field: redoslijed } }
+    fields:
+      - { name: naziv, label: Naziv, widget: string }
+      - { name: redoslijed, label: Redoslijed prikaza, widget: number, default: 10 }
+      - { name: kratko, label: Ukratko, widget: text, required: false }
+      - { name: rok, label: Kada se prijaviti, widget: string, required: false }
+      - { name: dokumenti, label: Potrebni dokumenti, label_singular: Dokument, widget: list, field: { name: dokument, label: Dokument, widget: string } }
+      - { name: kome_se_javiti, label: Kome se javiti, widget: string, required: false }
+      - { name: body, label: Detaljnije upute, widget: markdown, required: false }
+
+  # ---------------------------------------------------------------- ZAJEDNICE
+  - name: zajednice
+    label: Zajednice i aktivnosti
+    label_singular: Zajednica
+    icon: groups
+    folder: src/content/zajednice
+    create: true
+    slug: '{{slug}}'
+    identifier_field: naziv
+    sortable_fields: { fields: [redoslijed, naziv], default: { field: redoslijed } }
+    fields:
+      - { name: naziv, label: Naziv, widget: string }
+      - name: vrsta
+        label: Vrsta
+        widget: select
+        options: [Zbor, Liturgijska služba, Karitativna djelatnost, Molitvena zajednica, Vjeronauk, Mladi, Zajednica]
+      - { name: redoslijed, label: Redoslijed prikaza, widget: number, default: 10 }
+      - { name: sazetak, label: Kratki opis, widget: text, required: false }
+      - { name: termin, label: Termin susreta, widget: string, required: false }
+      - { name: mjesto, label: Mjesto, widget: string, required: false }
+      - { name: voditelj, label: Voditelj, widget: string, required: false }
+      - { name: kontakt, label: Kontakt (telefon ili e-mail), widget: string, required: false }
+      - { name: slika, label: Slika, widget: image, required: false }
+      - { name: body, label: Dodatni tekst, widget: markdown, required: false }
+
+  # ---------------------------------------------------------------- SVEĆENICI
+  - name: svecenici
+    label: Svećenici
+    label_singular: Svećenik
+    icon: person
+    folder: src/content/svecenici
+    extension: yml
+    format: yaml
+    create: true
+    slug: '{{slug}}'
+    identifier_field: ime
+    summary: '{{ime}} ({{od}}–{{do}})'
+    sortable_fields: { fields: [od, ime], default: { field: od, direction: descending } }
+    fields:
+      - { name: ime, label: Ime i titula, widget: string, hint: 'Npr. vlč. Ivan Horvat' }
+      - { name: sluzba, label: Služba, widget: string, default: župnik }
+      - { name: od, label: Godina početka službe, widget: number, required: false }
+      - { name: do, label: Godina završetka službe, widget: number, required: false }
+      - { name: sadasnji, label: Sadašnji svećenik u župi, widget: boolean, default: false }
+      - { name: slika, label: Fotografija, widget: image, required: false }
+      - { name: napomena, label: Napomena, widget: string, required: false }
+
+  # ---------------------------------------------------------------- STRANICE
+  - name: stranice
+    label: Stranice
+    icon: article
+    files:
+      - name: o-zupi
+        label: O župi (povijest, zaštitnik, galerija)
+        file: src/content/stranice/o-zupi.md
+        fields:
+          - { name: naslov, label: Naslov, widget: string }
+          - { name: uvod, label: Uvodna rečenica, widget: text, required: false }
+          - { name: zastitnik, label: Zaštitnik župe, widget: string, required: false }
+          - { name: dan_proslave, label: Dan proslave, widget: string, required: false }
+          - { name: o_zastitniku, label: O zaštitniku, widget: text, required: false }
+          - { name: slika, label: Glavna slika crkve, widget: image, required: false }
+          - name: galerija
+            label: Galerija
+            label_singular: Slika
+            widget: list
+            required: false
+            fields:
+              - { name: slika, label: Slika, widget: image }
+              - { name: opis, label: Opis, widget: string, required: false }
+          - { name: body, label: Povijest crkve i župe, widget: markdown }

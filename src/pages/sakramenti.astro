@@ -1,0 +1,71 @@
+---
+import { getCollection, render } from 'astro:content';
+import Osnova from '../layouts/Osnova.astro';
+import NaslovStranice from '../components/NaslovStranice.astro';
+import Ikona from '../components/Ikona.astro';
+import { postavke, telHref } from '../lib/sadrzaj';
+
+const p = await postavke();
+const sakramenti = (await getCollection('sakramenti')).sort((a, b) => a.data.redoslijed - b.data.redoslijed);
+const sadrzaji = await Promise.all(sakramenti.map(async (s) => ({ s, Content: (await render(s)).Content })));
+---
+<Osnova naslov="Sakramenti" opis="Što je potrebno za krštenje, prvu pričest, krizmu, vjenčanje i bolesničko pomazanje.">
+  <NaslovStranice nadnaslov="Sakramenti" naslov="Kako primiti sakramente" uvod="Kratke upute i popis potrebnih dokumenata. Otvorite sakrament koji vas zanima.">
+    <ul class="bez-ispisa mt-6 flex flex-wrap gap-2">
+      {sakramenti.map((s) => <li><a href={`#${s.id}`} class="oznaka min-h-10 px-4 text-base no-underline hover:bg-akcent hover:text-white">{s.data.naziv}</a></li>)}
+    </ul>
+  </NaslovStranice>
+
+  <section class="omot py-10">
+    <div class="grid gap-4">
+      {sadrzaji.map(({ s, Content }, i) => (
+        <details id={s.id} class="kartica group scroll-mt-28 p-0 open:shadow-md sm:p-0" open={i === 0}>
+          <summary class="flex min-h-16 cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 sm:px-6 [&::-webkit-details-marker]:hidden">
+            <span>
+              <span class="block font-serif text-2xl font-semibold">{s.data.naziv}</span>
+              {s.data.rok && <span class="mt-1 block text-[0.95rem] text-siva">Prijava: {s.data.rok}</span>}
+            </span>
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-akcent-blijedi text-akcent transition-transform group-open:rotate-180"><Ikona ime="dolje" /></span>
+          </summary>
+          <div class="grid gap-8 border-t border-crta px-5 py-6 sm:px-6 lg:grid-cols-[1.2fr_1fr]">
+            <div>
+              {s.data.kratko && <p class="text-lg">{s.data.kratko}</p>}
+              <div class="proza mt-4"><Content /></div>
+            </div>
+            <div class="space-y-5">
+              {s.data.dokumenti.length > 0 && (
+                <div class="rounded-xl bg-zlatna-blijeda p-5">
+                  <h3 class="text-lg">Potrebni dokumenti</h3>
+                  <ul class="mt-3 space-y-2">
+                    {s.data.dokumenti.map((d) => <li class="flex gap-3"><Ikona ime="kvacica" class="mt-1 h-5 w-5 shrink-0 text-akcent" /><span>{d}</span></li>)}
+                  </ul>
+                </div>
+              )}
+              {s.data.kome_se_javiti && (
+                <div class="rounded-xl border border-crta p-5">
+                  <h3 class="text-lg">Kome se javiti</h3>
+                  <p class="mt-2">{s.data.kome_se_javiti}</p>
+                  <div class="mt-3 flex flex-wrap gap-x-5 gap-y-2">
+                    {p.telefon && <a href={telHref(p.telefon)} class="inline-flex items-center gap-2 font-semibold"><Ikona ime="telefon" /> {p.telefon}</a>}
+                    {p.email && <a href={`mailto:${p.email}`} class="inline-flex items-center gap-2 font-semibold"><Ikona ime="mail" /> E-mail</a>}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+    <p class="mt-8 text-siva">Radno vrijeme ureda i ostali kontakti su na stranici <a href="/kontakt/">Kontakt i župni ured</a>.</p>
+  </section>
+</Osnova>
+
+<script>
+  // Otvori sakrament iz poveznice (#krstenje)
+  const otvori = () => {
+    const el = location.hash && document.querySelector<HTMLDetailsElement>(`details${CSS.escape(location.hash)}`);
+    if (el) el.open = true;
+  };
+  window.addEventListener('hashchange', otvori);
+  otvori();
+</script>

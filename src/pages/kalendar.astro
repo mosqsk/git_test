@@ -1,0 +1,146 @@
+---
+import Osnova from '../layouts/Osnova.astro';
+import NaslovStranice from '../components/NaslovStranice.astro';
+import Podizbornik from '../components/ObavijestiPodizbornik.astro';
+import Ikona from '../components/Ikona.astro';
+import { dogadaji } from '../lib/sadrzaj';
+import { zidno } from '../lib/datum';
+
+const svi = await dogadaji();
+const podaci = svi.map((e) => ({
+  naslov: e.data.naslov,
+  pocetak: zidno(e.data.pocetak),
+  kraj: e.data.kraj ? zidno(e.data.kraj) : '',
+  cijeliDan: e.data.cijeli_dan,
+  mjesto: e.data.mjesto,
+  vrsta: e.data.vrsta,
+  sazetak: e.data.sazetak,
+}));
+---
+<Osnova naslov="Kalendar događanja" opis="Kalendar svih događanja, pobožnosti i slavlja u župi.">
+  <NaslovStranice nadnaslov="Župne obavijesti" naslov="Kalendar" uvod="Sva događanja u župi po mjesecima. Dodirnite dan za pojedinosti.">
+    <Podizbornik aktivno="kalendar" />
+  </NaslovStranice>
+
+  <section class="omot py-10">
+    <div class="kartica p-3 sm:p-6">
+      <div class="flex items-center justify-between gap-2">
+        <button id="prethodni" type="button" class="grid h-12 w-12 place-items-center rounded-xl border border-crta hover:bg-akcent-blijedi" aria-label="Prethodni mjesec"><Ikona ime="lijevo" class="h-6 w-6" /></button>
+        <div class="text-center">
+          <h2 id="mjesec" class="text-2xl sm:text-3xl" aria-live="polite"></h2>
+          <button id="danas-gumb" type="button" class="mt-1 text-sm font-semibold text-akcent underline">Danas</button>
+        </div>
+        <button id="sljedeci" type="button" class="grid h-12 w-12 place-items-center rounded-xl border border-crta hover:bg-akcent-blijedi" aria-label="Sljedeći mjesec"><Ikona ime="desno" class="h-6 w-6" /></button>
+      </div>
+      <div class="mt-5 grid grid-cols-7 gap-1 text-center text-xs font-bold uppercase tracking-wide text-siva sm:text-sm" aria-hidden="true">
+        <span>Pon</span><span>Uto</span><span>Sri</span><span>Čet</span><span>Pet</span><span>Sub</span><span class="text-akcent">Ned</span>
+      </div>
+      <div id="mreza" class="mt-2 grid grid-cols-7 gap-1" role="grid"></div>
+    </div>
+
+    <div class="mt-8">
+      <h2 id="popis-naslov" class="text-2xl"></h2>
+      <ul id="popis" class="mt-4 grid gap-3"></ul>
+    </div>
+
+    <p class="mt-10 flex flex-wrap items-center gap-2 text-siva">
+      <Ikona ime="kalendar" /> Pretplatite se na kalendar na mobitelu:
+      <a href="/kalendar.ics" class="font-semibold">kalendar.ics</a>
+    </p>
+  </section>
+
+  <script id="podaci-dogadaja" type="application/json" set:html={JSON.stringify(podaci)} />
+</Osnova>
+
+<script>
+  import { sadaUHrvatskoj } from '../scripts/danas';
+  type D = { naslov: string; pocetak: string; kraj: string; cijeliDan: boolean; mjesto: string; vrsta: string; sazetak: string };
+  const svi: D[] = JSON.parse(document.getElementById('podaci-dogadaja')!.textContent || '[]');
+  const mreza = document.getElementById('mreza')!;
+  const popis = document.getElementById('popis')!;
+  const naslovMj = document.getElementById('mjesec')!;
+  const popisNaslov = document.getElementById('popis-naslov')!;
+  const danasISO = sadaUHrvatskoj().slice(0, 10);
+  const fmtMj = new Intl.DateTimeFormat('hr-HR', { timeZone: 'UTC', month: 'long', year: 'numeric' });
+  const fmtDan = new Intl.DateTimeFormat('hr-HR', { timeZone: 'UTC', weekday: 'long', day: 'numeric', month: 'long' });
+  const vel = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+  const iso = (d: Date) => d.toISOString().slice(0, 10);
+  const sat = (z: string) => z.slice(11, 16).replace(/^0/, '');
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+
+  const params = new URLSearchParams(location.search);
+  let [g, m] = (params.get('mjesec') || danasISO.slice(0, 7)).split('-').map(Number);
+  let odabrani: string | null = null;
+
+  const naDan = (dan: string) => svi.filter((e) => e.pocetak.slice(0, 10) <= dan && (e.kraj || e.pocetak).slice(0, 10) >= dan);
+
+  function stavka(e: D) {
+    const d = new Date(e.pocetak.slice(0, 10) + 'T00:00:00Z');
+    const kada = vel(fmtDan.format(d)) + (e.cijeliDan ? '' : `, ${sat(e.pocetak)}${e.kraj ? ' – ' + sat(e.kraj) : ''}`);
+    return `<li class="kartica flex flex-col gap-1 p-4 sm:p-5">
+      <p class="text-[0.95rem] text-siva"><span class="oznaka mr-2">${esc(e.vrsta)}</span>${esc(kada)}${e.mjesto ? ' · ' + esc(e.mjesto) : ''}</p>
+      <p class="font-serif text-xl font-semibold">${esc(e.naslov)}</p>
+      ${e.sazetak ? `<p class="text-siva">${esc(e.sazetak)}</p>` : ''}
+    </li>`;
+  }
+
+  function nacrtaj() {
+    const prvi = new Date(Date.UTC(g, m - 1, 1));
+    naslovMj.textContent = vel(fmtMj.format(prvi));
+    const pomak = (prvi.getUTCDay() + 6) % 7; // ponedjeljak = 0
+    const dana = new Date(Date.UTC(g, m, 0)).getUTCDate();
+    let html = '';
+    for (let i = 0; i < pomak; i++) html += '<div aria-hidden="true"></div>';
+    for (let dan = 1; dan <= dana; dan++) {
+      const d = iso(new Date(Date.UTC(g, m - 1, dan)));
+      const ev = naDan(d);
+      const jeDanas = d === danasISO;
+      const jeOdabran = d === odabrani;
+      const nedjelja = (pomak + dan - 1) % 7 === 6;
+      html += `<button type="button" data-dan="${d}" role="gridcell" aria-pressed="${jeOdabran}"
+        aria-label="${dan}. ${ev.length ? ev.length + ' događaj' + (ev.length > 1 ? 'a' : '') : 'nema događaja'}"
+        class="relative flex aspect-square min-h-11 flex-col items-center justify-start rounded-xl border p-1 text-base transition-colors sm:aspect-[4/3] sm:p-2
+        ${jeOdabran ? 'border-akcent bg-akcent text-white' : jeDanas ? 'border-zlatna bg-zlatna-blijeda' : 'border-transparent hover:bg-akcent-blijedi'}
+        ${nedjelja && !jeOdabran ? 'text-akcent' : ''}">
+        <span class="font-semibold">${dan}</span>
+        ${ev.length ? `<span class="mt-auto mb-1 flex gap-1">${ev.slice(0, 3).map(() => `<span class="h-2 w-2 rounded-full ${jeOdabran ? 'bg-white' : 'bg-akcent'}"></span>`).join('')}</span>` : ''}
+        ${ev.length ? `<span class="hidden w-full truncate text-left text-xs sm:block ${jeOdabran ? 'text-white' : 'text-siva'}">${esc(ev[0].naslov)}</span>` : ''}
+      </button>`;
+    }
+    mreza.innerHTML = html;
+
+    const mjesecKljuc = `${g}-${String(m).padStart(2, '0')}`;
+    const lista = odabrani ? naDan(odabrani) : svi.filter((e) => e.pocetak.slice(0, 7) === mjesecKljuc || (e.kraj && e.kraj.slice(0, 7) === mjesecKljuc));
+    popisNaslov.textContent = odabrani
+      ? vel(fmtDan.format(new Date(odabrani + 'T00:00:00Z')))
+      : `Događanja – ${fmtMj.format(prvi)}`;
+    popis.innerHTML = lista.length ? lista.map(stavka).join('') : '<li class="text-siva">Nema događanja.</li>';
+  }
+
+  function promijeni(korak: number) {
+    m += korak;
+    if (m < 1) { m = 12; g--; }
+    if (m > 12) { m = 1; g++; }
+    odabrani = null;
+    const url = new URL(location.href);
+    url.searchParams.set('mjesec', `${g}-${String(m).padStart(2, '0')}`);
+    history.replaceState(null, '', url);
+    nacrtaj();
+  }
+
+  mreza.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLElement>('[data-dan]');
+    if (!b) return;
+    odabrani = odabrani === b.dataset.dan ? null : b.dataset.dan!;
+    nacrtaj();
+    if (odabrani && window.innerWidth < 640) popisNaslov.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  document.getElementById('prethodni')!.addEventListener('click', () => promijeni(-1));
+  document.getElementById('sljedeci')!.addEventListener('click', () => promijeni(1));
+  document.getElementById('danas-gumb')!.addEventListener('click', () => {
+    [g, m] = danasISO.slice(0, 7).split('-').map(Number);
+    odabrani = danasISO;
+    nacrtaj();
+  });
+  nacrtaj();
+</script>

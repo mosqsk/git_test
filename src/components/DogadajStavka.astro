@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { danUTjednu, mjesecKratko, vrijeme, zidno, isoDan, velikoSlovo } from '../lib/datum';
+interface Props { e: CollectionEntry<'dogadaji'> }
+const { e } = Astro.props;
+const { naslov, pocetak, kraj, cijeli_dan, mjesto, vrsta, sazetak } = e.data;
+const krajZidno = kraj ? zidno(kraj) : cijeli_dan ? `${isoDan(pocetak)}T23:59` : zidno(new Date(pocetak.valueOf() + 2 * 3600000));
+---
+<li data-kraj={krajZidno} data-dan-iso={isoDan(pocetak)} class="flex gap-4 rounded-xl py-3">
+  <div class="flex w-16 shrink-0 flex-col items-center rounded-xl border border-crta bg-papir py-2 text-center">
+    <span class="text-xs font-bold uppercase tracking-wider text-akcent">{mjesecKratko(pocetak)}</span>
+    <span class="font-serif text-2xl font-semibold leading-none">{pocetak.getUTCDate()}</span>
+  </div>
+  <div class="min-w-0">
+    <p class="text-[0.95rem] text-siva">
+      <span class="relativni-dan mr-1 rounded-full bg-zlatna px-2 py-0.5 text-xs font-bold uppercase text-white" hidden></span>
+      {velikoSlovo(danUTjednu(pocetak))}{!cijeli_dan && <>, {vrijeme(pocetak)}{kraj && <> – {vrijeme(kraj)}</>}</>}
+      {mjesto && <> · {mjesto}</>}
+    </p>
+    <p class="font-semibold leading-snug">{naslov}</p>
+    {sazetak && <p class="mt-0.5 text-[0.95rem] text-siva">{sazetak}</p>}
+    <span class="sr-only">Vrsta: {vrsta}</span>
+  </div>
+</li>

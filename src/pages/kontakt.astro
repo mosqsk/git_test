@@ -1,0 +1,120 @@
+---
+import Osnova from '../layouts/Osnova.astro';
+import NaslovStranice from '../components/NaslovStranice.astro';
+import Ikona from '../components/Ikona.astro';
+import { postavke, telHref, ibanRazmak } from '../lib/sadrzaj';
+import 'leaflet/dist/leaflet.css';
+
+const p = await postavke();
+const a = p.adresa;
+const navigacija = `https://www.openstreetmap.org/directions?to=${a.lat}%2C${a.lng}`;
+const googleKarte = `https://www.google.com/maps/dir/?api=1&destination=${a.lat},${a.lng}`;
+---
+<Osnova naslov="Kontakt i župni ured" opis={`Adresa, telefon, e-mail, radno vrijeme ureda i IBAN za donacije – ${p.naziv}.`}>
+  <NaslovStranice nadnaslov="Kontakt" naslov="Kontakt i župni ured" uvod="Slobodno nas nazovite ili dođite u radno vrijeme ureda." />
+
+  <section class="omot grid gap-6 py-10 lg:grid-cols-2">
+    <div class="space-y-6">
+      <div class="kartica">
+        <h2 class="text-2xl">Kontakt</h2>
+        <ul class="mt-5 space-y-4 text-lg">
+          <li class="flex gap-4"><Ikona ime="mjesto" class="mt-1 h-6 w-6 shrink-0 text-akcent" />
+            <address class="not-italic">{a.ulica}<br />{a.postanski_broj} {a.mjesto}</address></li>
+          {p.telefon && <li class="flex gap-4"><Ikona ime="telefon" class="mt-1 h-6 w-6 shrink-0 text-akcent" />
+            <span><a href={telHref(p.telefon)} class="font-semibold">{p.telefon}</a> <span class="text-base text-siva">(ured)</span></span></li>}
+          {p.mobitel && <li class="flex gap-4"><Ikona ime="telefon" class="mt-1 h-6 w-6 shrink-0 text-akcent" />
+            <span><a href={telHref(p.mobitel)} class="font-semibold">{p.mobitel}</a> <span class="text-base text-siva">(mobitel, hitni slučajevi)</span></span></li>}
+          {p.email && <li class="flex gap-4"><Ikona ime="mail" class="mt-1 h-6 w-6 shrink-0 text-akcent" />
+            <a href={`mailto:${p.email}`} class="break-all font-semibold">{p.email}</a></li>}
+        </ul>
+        <div class="mt-6 flex flex-wrap gap-3">
+          {p.telefon && <a href={telHref(p.telefon)} class="gumb"><Ikona ime="telefon" /> Nazovi</a>}
+          <a href={googleKarte} class="gumb-obrub" target="_blank" rel="noopener"><Ikona ime="mjesto" /> Upute za dolazak</a>
+        </div>
+      </div>
+
+      <div class="kartica">
+        <h2 class="text-2xl">Radno vrijeme ureda</h2>
+        <dl class="mt-4 divide-y divide-crta">
+          {p.radno_vrijeme_ureda.map((r) => (
+            <div class="flex flex-wrap justify-between gap-x-4 gap-y-1 py-3">
+              <dt class="font-semibold">{r.dani}</dt>
+              <dd class="font-serif text-lg font-semibold tabular-nums text-akcent">{r.vrijeme}</dd>
+            </div>
+          ))}
+        </dl>
+        {p.napomena_ureda && <p class="mt-4 rounded-xl bg-zlatna-blijeda p-4">{p.napomena_ureda}</p>}
+      </div>
+    </div>
+
+    <div class="space-y-6">
+      <div class="kartica overflow-hidden p-0 sm:p-0">
+        <div id="karta" class="h-80 w-full bg-crta sm:h-[26rem]" data-lat={a.lat} data-lng={a.lng} data-naziv={p.naziv} role="region" aria-label="Karta s lokacijom crkve"></div>
+        <p class="px-5 py-3 text-sm text-siva">Karta: © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a> suradnici · <a href={navigacija} target="_blank" rel="noopener">Otvori veću kartu</a></p>
+      </div>
+
+      {p.iban && (
+        <div id="donacije" class="kartica scroll-mt-28 border-2 border-zlatna">
+          <p class="nadnaslov">Donacije</p>
+          <h2 class="mt-1 text-2xl">Podržite svoju župu</h2>
+          <p class="mt-2 text-siva">Hvala na svakom daru za potrebe župe, obnovu crkve i Caritas.</p>
+          <dl class="mt-5 space-y-3">
+            {p.primatelj && <div><dt class="text-sm text-siva">Primatelj</dt><dd class="font-semibold">{p.primatelj}</dd></div>}
+            <div>
+              <dt class="text-sm text-siva">IBAN</dt>
+              <dd class="mt-1 flex flex-wrap items-center gap-3">
+                <span id="iban" class="font-mono text-lg font-semibold tracking-wide sm:text-xl">{ibanRazmak(p.iban)}</span>
+                <button type="button" id="kopiraj-iban" data-iban={p.iban.replace(/\s+/g, '')} class="gumb min-h-11 px-4 text-base">
+                  <Ikona ime="kopiraj" /> <span>Kopiraj</span>
+                </button>
+              </dd>
+            </div>
+            {p.banka && <div><dt class="text-sm text-siva">Banka</dt><dd>{p.banka}</dd></div>}
+            {p.oib && <div><dt class="text-sm text-siva">OIB</dt><dd class="tabular-nums">{p.oib}</dd></div>}
+            <div><dt class="text-sm text-siva">Opis plaćanja</dt><dd>Dar za župu</dd></div>
+          </dl>
+          <p id="iban-poruka" class="mt-3 text-sm font-semibold text-akcent" role="status" aria-live="polite"></p>
+        </div>
+      )}
+    </div>
+  </section>
+</Osnova>
+
+<script>
+  import L from 'leaflet';
+
+  const el = document.getElementById('karta');
+  if (el) {
+    const lat = Number(el.dataset.lat), lng = Number(el.dataset.lng);
+    const karta = L.map(el, { scrollWheelZoom: false }).setView([lat, lng], 16);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap',
+    }).addTo(karta);
+    const ikona = L.divIcon({
+      className: '',
+      html: '<div style="width:40px;height:40px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#7a1f2b;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35);display:grid;place-items:center"><svg viewBox="0 0 24 24" width="20" height="20" fill="#fff" style="transform:rotate(45deg)"><path d="M10.5 2h3v5.5H19v3h-5.5V22h-3V10.5H5v-3h5.5z"/></svg></div>',
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
+    L.marker([lat, lng], { icon: ikona, title: el.dataset.naziv }).addTo(karta).bindPopup(el.dataset.naziv || '');
+  }
+
+  const gumb = document.getElementById('kopiraj-iban');
+  const poruka = document.getElementById('iban-poruka');
+  gumb?.addEventListener('click', async () => {
+    const iban = gumb.dataset.iban || '';
+    try {
+      await navigator.clipboard.writeText(iban);
+    } catch {
+      const r = document.createRange();
+      r.selectNodeContents(document.getElementById('iban')!);
+      getSelection()?.removeAllRanges();
+      getSelection()?.addRange(r);
+      document.execCommand('copy');
+    }
+    if (poruka) poruka.textContent = 'IBAN je kopiran. Zalijepite ga u aplikaciju svoje banke.';
+    const tekst = gumb.querySelector('span');
+    if (tekst) { tekst.textContent = 'Kopirano ✓'; setTimeout(() => (tekst.textContent = 'Kopiraj'), 2500); }
+  });
+</script>

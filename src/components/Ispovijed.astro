@@ -1,0 +1,19 @@
+---
+import Ikona from './Ikona.astro';
+import { postavke } from '../lib/sadrzaj';
+const p = await postavke();
+---
+<div class="kartica">
+  <div class="flex items-center gap-3">
+    <span class="grid h-11 w-11 place-items-center rounded-full bg-akcent-blijedi text-akcent"><Ikona ime="srce" class="h-6 w-6" /></span>
+    <h2 class="text-2xl">Sveta ispovijed</h2>
+  </div>
+  <ul class="mt-5 space-y-3">
+    {p.ispovijed.map((i) => (
+      <li class="flex gap-3">
+        <Ikona ime="kvacica" class="mt-1 h-5 w-5 shrink-0 text-zlatna" />
+        <span><span class="font-semibold">{i.kada}</span>{i.napomena && <span class="block text-[0.95rem] text-siva">{i.napomena}</span>}</span>
+      </li>
+    ))}
+  </ul>
+</div>

@@ -1,0 +1,17 @@
+---
+interface Props { aktivno: 'obavijesti' | 'listici' | 'kalendar' }
+const { aktivno } = Astro.props;
+const stavke = [
+  { k: 'obavijesti', href: '/obavijesti/', t: 'Obavijesti' },
+  { k: 'listici', href: '/listici/', t: 'Tjedni listići' },
+  { k: 'kalendar', href: '/kalendar/', t: 'Kalendar' },
+];
+---
+<nav aria-label="Župne obavijesti" class="bez-ispisa mt-8">
+  <ul class="inline-flex flex-wrap gap-0.5 rounded-2xl border border-crta bg-povrsina p-1">
+    {stavke.map((s) => (
+      <li><a href={s.href} aria-current={aktivno === s.k ? 'page' : undefined}
+        class:list={['inline-flex min-h-11 items-center rounded-xl px-3 font-semibold no-underline sm:px-4', aktivno === s.k ? 'bg-akcent text-white hover:text-white' : 'text-tinta hover:bg-akcent-blijedi']}>{s.t}</a></li>
+    ))}
+  </ul>
+</nav>

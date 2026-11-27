@@ -1,0 +1,12 @@
+---
+interface Props { nadnaslov?: string; naslov: string; uvod?: string }
+const { nadnaslov, naslov, uvod } = Astro.props;
+---
+<section class="border-b border-crta bg-[radial-gradient(ellipse_at_top,_var(--color-zlatna-blijeda),_transparent_70%)]">
+  <div class="omot py-10 sm:py-14">
+    {nadnaslov && <p class="nadnaslov">{nadnaslov}</p>}
+    <h1 class="mt-2 text-4xl sm:text-5xl">{naslov}</h1>
+    {uvod && <p class="mt-4 max-w-2xl text-lg text-siva">{uvod}</p>}
+    <slot />
+  </div>
+</section>

@@ -1,0 +1,41 @@
+---
+import Ikona from './Ikona.astro';
+import { postavke, telHref } from '../lib/sadrzaj';
+const p = await postavke();
+const godina = new Date().getFullYear();
+---
+<footer class="mt-20 border-t border-crta bg-povrsina">
+  <div class="omot grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="lg:col-span-2">
+      <p class="font-serif text-xl font-semibold">{p.naziv}</p>
+      {p.biskupija && <p class="text-siva">{p.biskupija}</p>}
+      <address class="mt-4 not-italic text-siva">
+        {p.adresa.ulica}<br />{p.adresa.postanski_broj} {p.adresa.mjesto}
+      </address>
+    </div>
+    <div>
+      <p class="font-semibold">Kontakt</p>
+      <ul class="mt-3 space-y-2">
+        {p.telefon && <li><a class="inline-flex items-center gap-2" href={telHref(p.telefon)}><Ikona ime="telefon" /> {p.telefon}</a></li>}
+        {p.email && <li><a class="inline-flex items-center gap-2 break-all" href={`mailto:${p.email}`}><Ikona ime="mail" /> {p.email}</a></li>}
+        {p.facebook && <li><a href={p.facebook} rel="noopener">Facebook</a></li>}
+        {p.youtube && <li><a href={p.youtube} rel="noopener">YouTube</a></li>}
+      </ul>
+    </div>
+    <div>
+      <p class="font-semibold">Brze poveznice</p>
+      <ul class="mt-3 space-y-2">
+        <li><a href="/listici/">Tjedni listići</a></li>
+        <li><a href="/kalendar/">Kalendar događanja</a></li>
+        <li><a href="/kontakt/#donacije">Donacije</a></li>
+        <li><a class="inline-flex items-center gap-2" href="/rss.xml"><Ikona ime="rss" /> RSS obavijesti</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-crta">
+    <div class="omot flex flex-wrap items-center justify-between gap-2 py-4 text-sm text-siva">
+      <p>© {godina} {p.naziv}</p>
+      <a href="/admin/" class="text-siva" rel="nofollow">Za urednike</a>
+    </div>
+  </div>
+</footer>

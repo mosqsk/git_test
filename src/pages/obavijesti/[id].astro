@@ -1,0 +1,39 @@
+---
+import { render } from 'astro:content';
+import Osnova from '../../layouts/Osnova.astro';
+import Akcije from '../../components/Akcije.astro';
+import ObavijestKartica from '../../components/ObavijestKartica.astro';
+import { obavijesti } from '../../lib/sadrzaj';
+import { datumDugi, isoDan, velikoSlovo } from '../../lib/datum';
+
+export async function getStaticPaths() {
+  const sve = await obavijesti();
+  return sve.map((o) => ({ params: { id: o.id }, props: { o, ostale: sve.filter((x) => x.id !== o.id).slice(0, 2) } }));
+}
+const { o, ostale } = Astro.props;
+const { Content } = await render(o);
+const { naslov, datum, kategorija, sazetak, slika } = o.data;
+---
+<Osnova naslov={naslov} opis={sazetak || undefined} slika={slika || undefined} vrsta="article">
+  <article class="omot py-10 sm:py-14">
+    <a href="/obavijesti/" class="bez-ispisa font-semibold">← Sve obavijesti</a>
+    <header class="mt-6 max-w-3xl">
+      <div class="flex flex-wrap items-center gap-3 text-siva">
+        <span class="oznaka">{kategorija}</span>
+        <time datetime={isoDan(datum)}>{velikoSlovo(datumDugi(datum))}</time>
+      </div>
+      <h1 class="mt-4 text-4xl sm:text-5xl">{naslov}</h1>
+      {sazetak && <p class="mt-4 text-xl text-siva">{sazetak}</p>}
+      <div class="mt-6"><Akcije naslov={naslov} /></div>
+    </header>
+    {slika && <img src={slika} alt="" class="mt-8 max-h-[480px] w-full max-w-3xl rounded-2xl object-cover" />}
+    <div class="proza mt-8"><Content /></div>
+  </article>
+
+  {ostale.length > 0 && (
+    <aside class="bez-ispisa omot border-t border-crta pt-10">
+      <h2 class="text-2xl">Još obavijesti</h2>
+      <div class="mt-6 grid gap-6 sm:grid-cols-2">{ostale.map((x) => <ObavijestKartica o={x} />)}</div>
+    </aside>
+  )}
+</Osnova>
