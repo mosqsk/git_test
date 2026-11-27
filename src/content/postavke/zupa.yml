@@ -1,46 +1,61 @@
-naziv: "Župa svete Marije Magdalene, Sunja"
-kratki_naziv: "Župa sv. Marije Magdalene"
-podnaslov: "Sunja · Sisačka biskupija"
-biskupija: "Sisačka biskupija · Dubičko-kostajnički dekanat"
-opis: "Dobro došli na mrežnu stranicu župe svete Marije Magdalene u Sunji. Ovdje su raspored svetih misa, tjedne obavijesti, upute za sakramente i sve što trebate znati o životu naše župne zajednice."
-adresa:
-  ulica: "Matije Gupca 29"
-  postanski_broj: "44210"
-  mjesto: "Sunja"
-  lat: 45.3537
-  lng: 16.5605
-telefon: "+385 44 833 087"
-mobitel: ""
-email: "ivankuzmic86@gmail.com"
-iban: ""
-primatelj: "Župa sv. Marije Magdalene, Sunja"
-banka: ""
-oib: ""
-facebook: "https://www.facebook.com/groups/393710587500/"
-youtube: ""
+naziv: Župa svete Marije Magdalene, Sunja
+kratki_naziv: Župa sv. Marije Magdalene
+podnaslov: Sunja · Sisačka biskupija
+biskupija: Sisačka biskupija · Dubičko-kostajnički dekanat
+opis: Dobro došli na mrežnu stranicu župe svete Marije Magdalene u Sunji. Ovdje su raspored svetih misa, tjedne obavijesti, upute za sakramente i sve što trebate znati o životu naše župne zajednice.
 raspored_misa:
-  - oznaka: "[PRIMJER] Nedjelja i zapovjedni blagdani"
-    dani: [ned]
-    vremena: ["8:00", "10:00", "11:30", "18:00"]
-    napomena: ""
-  - oznaka: "[PRIMJER] Radni dan (ponedjeljak – petak)"
-    dani: [pon, uto, sri, cet, pet]
-    vremena: ["7:00", "18:00"]
-    napomena: "Večernja misa ljeti u 19:00"
-  - oznaka: "[PRIMJER] Subota"
-    dani: [sub]
-    vremena: ["7:00", "18:00"]
-    napomena: "Večernja misa je nedjeljna (vigilija)"
+  - oznaka: '[PRIMJER] Nedjelja i zapovjedni blagdani'
+    dani:
+      - ned
+    vremena:
+      - '8:00'
+      - '10:00'
+      - '11:30'
+      - '18:00'
+    napomena: ''
+  - oznaka: '[PRIMJER] Radni dan (ponedjeljak – petak)'
+    dani:
+      - pon
+      - uto
+      - sri
+      - cet
+      - pet
+    vremena:
+      - '7:00'
+      - '18:00'
+    napomena: Večernja misa ljeti u 19:00
+  - oznaka: '[PRIMJER] Subota'
+    dani:
+      - sub
+    vremena:
+      - '7:00'
+      - '18:00'
+    napomena: Večernja misa je nedjeljna (vigilija)
 ispovijed:
-  - kada: "[PRIMJER] Svaki dan pola sata prije večernje mise"
-    napomena: ""
-  - kada: "[PRIMJER] Subotom 17:00 – 18:00"
-    napomena: ""
-  - kada: "[PRIMJER] Prvi petak u mjesecu od 16:30"
-    napomena: "Pohod bolesnicima u jutarnjim satima"
+  - kada: '[PRIMJER] Svaki dan pola sata prije večernje mise'
+    napomena: ''
+  - kada: '[PRIMJER] Subotom 17:00 – 18:00'
+    napomena: ''
+  - kada: '[PRIMJER] Prvi petak u mjesecu od 16:30'
+    napomena: Pohod bolesnicima u jutarnjim satima
+adresa:
+  ulica: Matije Gupca 29
+  postanski_broj: '44210'
+  mjesto: Sunja
+  lat: 45.37040811043648
+  lng: 16.56702427494076
+telefon: +385 44 833 087
+mobitel: ''
+email: ivankuzmic86@gmail.com
 radno_vrijeme_ureda:
-  - dani: "[PRIMJER] Ponedjeljak, srijeda, petak"
-    vrijeme: "9:00 – 11:00"
-  - dani: "[PRIMJER] Utorak i četvrtak"
-    vrijeme: "16:00 – 17:30"
-napomena_ureda: "[PRIMJER] Za hitne slučajeve (bolesnik na samrti) nazovite župni ured u bilo koje doba."
+  - dani: '[PRIMJER] Ponedjeljak, srijeda, petak'
+    vrijeme: 9:00 – 11:00
+  - dani: '[PRIMJER] Utorak i četvrtak'
+    vrijeme: 16:00 – 17:30
+napomena_ureda: '[PRIMJER] Za hitne slučajeve (bolesnik na samrti) nazovite župni ured u bilo koje doba.'
+iban: ''
+primatelj: Župa sv. Marije Magdalene, Sunja
+banka: ''
+oib: ''
+facebook: ''
+youtube: ''
