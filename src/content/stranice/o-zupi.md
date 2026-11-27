@@ -1,10 +1,10 @@
 ---
-naslov: "O župi"
-uvod: "Župa svete Marije Magdalene u Sunji spominje se već 1334. godine. Danas okuplja oko 3.174 vjernika u 21 naselju."
-zastitnik: "Sveta Marija Magdalena"
-dan_proslave: "22. srpnja"
-o_zastitniku: "Marija Magdalena pratila je Isusa i bila prva svjedokinja njegova uskrsnuća. Zbog toga je zovu „apostolicom apostolâ”. Njezin blagdan slavimo 22. srpnja."
-slika: ""
+naslov: O župi
+uvod: Župa svete Marije Magdalene u Sunji spominje se već 1334. godine. Danas okuplja oko 3.174 vjernika u 21 naselju.
+zastitnik: Sveta Marija Magdalena
+dan_proslave: 22. srpnja
+o_zastitniku: Marija Magdalena pratila je Isusa i bila prva svjedokinja njegova uskrsnuća. Zbog toga je zovu „apostolicom apostolâ”. Njezin blagdan slavimo 22. srpnja.
+slika: https://biskupija-sisak.hr/wp-content/uploads/2022/07/crkva-sv-marije-magdalene-1.jpg
 galerija: []
 ---
 
@@ -24,8 +24,4 @@ U crkvi su orgulje koje je **1909. godine** izradio graditelj orgulja Joseph Bra
 
 Bobovac, Bistrač, Drljača, Greda Sunjska, Gradusa Posavska, Letina Donja, Selišće Sunjsko, Staza, Vedro Polje i Žreme.
 
-Župa pripada **Dubičko-kostajničkom dekanatu** [Sisačke biskupije](https://biskupija-sisak.hr/zupa-svete-marije-magdalene-sunja/).
-
-## Pratite nas
-
-Najnovije vijesti iz župe objavljujemo i u [Facebook grupi župe](https://www.facebook.com/groups/393710587500/).
+Župa pripada **Dubičko-kostajničkom dekanatu** [Sisačke biskupije](https://biskupija-sisak.hr/).
