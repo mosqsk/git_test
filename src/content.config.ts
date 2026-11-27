@@ -153,4 +153,15 @@ const stranice = defineCollection({
   }),
 });
 
-export const collections = { postavke, obavijesti, listici, dogadaji, sakramenti, zajednice, svecenici, stranice };
+const crkve = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/crkve' }),
+  schema: z.object({
+    naziv: z.string(),
+    mjesto: opcionalniTekst,
+    redoslijed: z.coerce.number().default(10),
+    slika: opcionalniTekst,
+    opis_slike: opcionalniTekst,
+  }),
+});
+
+export const collections = { crkve, postavke, obavijesti, listici, dogadaji, sakramenti, zajednice, svecenici, stranice };

@@ -10,18 +10,18 @@ galerija: []
 
 ## Povijest župe
 
-Župa se prvi put spominje **1334. godine**. Sjedište joj je tada bilo u Sunjskoj Gredi. Kao župa obnovljena je **1716. godine**.
+Župa se prvi put spominje **1334. godine**. Sjedište joj je tada bilo u Sunjskoj Gredi. Tijekom ratova s Osmanlijama stanovništvo je raseljeno i župa je nestala, a obnovljena je **1716. godine**.
 
 ## Župna crkva
 
-Crkva svete Marije Magdalene sagrađena je **1824. godine** na mjestu nekadašnje drvene crkve. Građena je u kasnobaroknom i klasicističkom stilu, kakav je karakterističan za crkve Vojne krajine. U Domovinskom ratu oštećena je granatiranjem, a poslije je obnovljena.
+Crkva svete Marije Magdalene sagrađena je **1824. godine** na mjestu starije drvene crkve, koju izvori spominju već početkom 18. stoljeća. Jednobrodna je građevina s polukružnom apsidom i zvonikom iznad glavnog ulaza, u kasnobaroknom i klasicističkom stilu kakav je karakterističan za crkve Vojne krajine.
 
-U crkvi su orgulje koje je **1909. godine** izradio graditelj orgulja Joseph Brandl.
+U crkvi je sačuvan izvorni inventar te orgulje koje je **1909. godine** izradio graditelj orgulja Josef Brandl. U Domovinskom ratu crkva je više puta granatirana, a poslije je obnovljena u izvornom obliku.
 
 ## Područje župe
 
-Župa obuhvaća oko **3.174 vjernika** u **21 naselju**. Osim župne crkve u Sunji, ima filijalne crkve i kapele u ovim mjestima:
+Župa obuhvaća oko **3.174 vjernika** u **21 naselju**: Sunja, Bistrač, Bobovac, Crkveni Bok, Drljače, Gradusa, Hrastovac, Ivanjski Bok, Jasenovčani, Kostreši, Krivaj, Letina Donja, Letina Gornja, Papići, Paukova, Selišće Sunjsko, Slovinci, Staza, Strmen, Vedro Polje i Žreme.
 
-Bobovac, Bistrač, Drljača, Greda Sunjska, Gradusa Posavska, Letina Donja, Selišće Sunjsko, Staza, Vedro Polje i Žreme.
+Osim župne crkve u Sunji, župa ima petnaest crkava i kapela po selima. Pogledajte ih [niže na ovoj stranici](#crkve-i-kapele).
 
 Župa pripada **Dubičko-kostajničkom dekanatu** [Sisačke biskupije](https://biskupija-sisak.hr/).
