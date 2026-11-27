@@ -14,6 +14,9 @@ const postavke = defineCollection({
     kratki_naziv: z.string(),
     podnaslov: opcionalniTekst,
     biskupija: opcionalniTekst,
+    logo: opcionalniTekst,
+    logo_biskupije: opcionalniTekst,
+    poveznica_biskupije: opcionalniTekst,
     opis: opcionalniTekst,
     adresa: z.object({
       ulica: z.string(),

@@ -7,11 +7,23 @@ const godina = new Date().getFullYear();
 <footer class="mt-20 border-t border-crta bg-povrsina">
   <div class="omot grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
     <div class="lg:col-span-2">
-      <p class="font-serif text-xl font-semibold">{p.naziv}</p>
-      {p.biskupija && <p class="text-siva">{p.biskupija}</p>}
-      <address class="mt-4 not-italic text-siva">
-        {p.adresa.ulica}<br />{p.adresa.postanski_broj} {p.adresa.mjesto}
-      </address>
+      <div class="flex items-start gap-4">
+        {p.logo && <img src={p.logo} alt="" class="h-16 w-16 shrink-0 object-contain" loading="lazy" />}
+        <div>
+          <p class="font-serif text-xl font-semibold">{p.naziv}</p>
+          {p.biskupija && <p class="text-siva">{p.biskupija}</p>}
+          <address class="mt-4 not-italic text-siva">
+            {p.adresa.ulica}<br />{p.adresa.postanski_broj} {p.adresa.mjesto}
+          </address>
+        </div>
+      </div>
+      {p.logo_biskupije && (
+        p.poveznica_biskupije
+          ? <a href={p.poveznica_biskupije} target="_blank" rel="noopener" class="mt-6 inline-block" title={p.biskupija ? p.biskupija.split('·')[0].trim() : 'Biskupija'}>
+              <img src={p.logo_biskupije} alt={p.biskupija ? p.biskupija.split('·')[0].trim() : 'Biskupija'} class="h-16 w-auto max-w-[260px] object-contain" loading="lazy" />
+            </a>
+          : <img src={p.logo_biskupije} alt={p.biskupija ? p.biskupija.split('·')[0].trim() : 'Biskupija'} class="mt-6 h-16 w-auto max-w-[260px] object-contain" loading="lazy" />
+      )}
     </div>
     <div>
       <p class="font-semibold">Kontakt</p>

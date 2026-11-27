@@ -1,7 +1,7 @@
 ---
 import Ikona from './Ikona.astro';
-interface Props { naziv: string; podnaslov?: string }
-const { naziv, podnaslov } = Astro.props;
+interface Props { naziv: string; podnaslov?: string; logo?: string }
+const { naziv, podnaslov, logo } = Astro.props;
 const stavke = [
   { href: '/', tekst: 'Naslovnica' },
   { href: '/obavijesti/', tekst: 'Župne obavijesti' },
@@ -31,9 +31,11 @@ const aktivno = (href: string) =>
 <header class="sticky top-0 z-40 border-b border-crta bg-papir/95 backdrop-blur supports-[backdrop-filter]:bg-papir/85">
   <div class="omot flex items-center justify-between gap-4 py-3">
     <a href="/" class="flex min-w-0 items-center gap-3 text-tinta no-underline hover:text-tinta">
-      <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 border-zlatna text-akcent">
-        <svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor" aria-hidden="true"><path d="M10.5 2h3v5.5H19v3h-5.5V22h-3V10.5H5v-3h5.5z"/></svg>
-      </span>
+      {logo
+        ? <img src={logo} alt="" class="h-11 w-11 shrink-0 object-contain" />
+        : <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 border-zlatna text-akcent">
+            <svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor" aria-hidden="true"><path d="M10.5 2h3v5.5H19v3h-5.5V22h-3V10.5H5v-3h5.5z"/></svg>
+          </span>}
       <span class="min-w-0">
         <span class="block truncate font-serif text-lg font-semibold leading-tight sm:text-xl">{naziv}</span>
         {podnaslov && <span class="block truncate text-sm text-siva">{podnaslov}</span>}

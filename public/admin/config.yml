@@ -137,6 +137,9 @@ collections:
           - { name: kratki_naziv, label: Kratki naziv (za zaglavlje), widget: string }
           - { name: podnaslov, label: Podnaslov (mjesto), widget: string, required: false }
           - { name: biskupija, label: (Nad)biskupija, widget: string, required: false }
+          - { name: logo, label: Logo župe (neobavezno), widget: image, required: false, hint: 'Prikazuje se u zaglavlju i podnožju. Ako je prazno, prikazuje se križ.' }
+          - { name: logo_biskupije, label: Logo biskupije (podnožje), widget: image, required: false }
+          - { name: poveznica_biskupije, label: Poveznica na stranicu biskupije, widget: string, required: false }
           - { name: opis, label: Pozdravni tekst na naslovnici, widget: text, required: false }
           - name: raspored_misa
             label: Raspored svetih misa
