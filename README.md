@@ -71,12 +71,12 @@ Potrebno je jednom postaviti. Odaberite **A (Netlify, najjednostavnije)** ili **
    Postavke gradnje upisane su u `netlify.toml` (naredba `npm run build`, mapa `dist`). Kliknite **Deploy**.
 3. **Prijava u /admin preko GitHuba**:
    - Na GitHubu: **Settings → Developer settings → OAuth Apps → New OAuth App**.
-     - *Homepage URL*: adresa vaše stranice (npr. `https://zupa-sv-josipa.netlify.app`)
+     - *Homepage URL*: adresa vaše stranice (`https://zupa-sv-marije-magdalene.netlify.app`)
      - *Authorization callback URL*: `https://api.netlify.com/auth/done`
    - Kopirajte **Client ID** i stvorite **Client secret**.
    - Na Netlifyju: **Site configuration → Access & security → OAuth → Install provider → GitHub**, zalijepite ID i secret.
-4. U `public/admin/config.yml` provjerite `repo:` (vlasnik/repozitorij) i `branch:` (npr. `main`).
-5. Varijabla okoline `SITE_URL` (Site configuration → Environment variables) neka bude prava adresa stranice, npr. `https://www.zupa-primjer.hr`.
+4. U `public/admin/config.yml` već su upisani `repo: mosqsk/git_test`, `branch: main` i `site_url` (adresa stranice). Ako se repozitorij ili adresa promijene, ažurirajte ih ondje.
+5. Varijablu `SITE_URL` **ne treba** postavljati: Netlify sam daje adresu stranice. Potrebna je tek kada dodate vlastitu domenu (vidi niže).
 
 ### B) Cloudflare Pages
 1. Na [dash.cloudflare.com](https://dash.cloudflare.com): **Workers & Pages → Create → Pages → Connect to Git** → odaberite repozitorij.
@@ -89,7 +89,7 @@ Potrebno je jednom postaviti. Odaberite **A (Netlify, najjednostavnije)** ili **
 Urednik treba GitHub račun koji je dodan kao **suradnik (collaborator)** na repozitorij: GitHub → repozitorij → **Settings → Collaborators → Add people**.
 
 ### Vlastita domena
-U Netlifyju ili Cloudflareu dodajte domenu (npr. `zupa-primjer.hr`) pod **Domains** i slijedite upute za DNS. Zatim ažurirajte `SITE_URL`.
+U Netlifyju ili Cloudflareu dodajte domenu (npr. `zupa-sunja.hr`) pod **Domains** i slijedite upute za DNS. Zatim novu adresu upišite u `site_url` u `public/admin/config.yml` i postavite varijablu okoline `SITE_URL` na istu adresu.
 
 ---
 
