@@ -50,7 +50,7 @@ const ogSlika = new URL(slika || '/og-slika.png', Astro.site);
     })} />
   </head>
   <body class="flex min-h-screen flex-col">
-    <Zaglavlje naziv={p.kratki_naziv} podnaslov={p.podnaslov} />
+    <Zaglavlje naziv={p.kratki_naziv} podnaslov={p.podnaslov} logo={p.logo} />
     <main id="sadrzaj" class="flex-1">
       <slot />
     </main>
